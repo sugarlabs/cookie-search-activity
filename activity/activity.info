@@ -1,0 +1,8 @@
+[Activity]
+name = Search
+activity_version = 1
+license = GPLv3
+bundle_id = org.sugarlabs.SearchActivity
+exec = sugar-activity SearchActivity.SearchActivity
+icon = activity-search
+show_launcher = yes
