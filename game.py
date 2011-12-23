@@ -13,7 +13,7 @@
 
 import gtk
 import cairo
-
+import os
 from random import uniform
 
 from gettext import gettext as _
@@ -31,23 +31,27 @@ from sprites import Sprites, Sprite
 
 # Grid dimensions must be even
 TEN = 10
-SIX = 6
+SEVEN = 7
 DOT_SIZE = 40
+PATHS = [False, 'cookiemonster.jpg', 'cookie.jpg', 'cookie.jpg',
+         'bitten-cookie.jpg']
 
 
 class Game():
 
-    def __init__(self, canvas, parent=None, colors=['#A0FFA0', '#FF8080']):
+    def __init__(self, canvas, parent=None, path=None,
+                 colors=['#A0FFA0', '#FF8080']):
         self._activity = parent
         self._colors = ['#FFFFFF']
         self._colors.append(colors[0])
         self._colors.append(colors[1])
-        self._colors.append('#000000')
+        self._colors.append(colors[0])
+        self._colors.append('#FF0000')
 
         self._canvas = canvas
-        if parent is not None:
-            parent.show_all()
-            self._parent = parent
+        parent.show_all()
+        self._parent = parent
+        self._path = path
 
         self._canvas.set_flags(gtk.CAN_FOCUS)
         self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
@@ -64,7 +68,7 @@ class Game():
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
         self._dots = []
-        for y in range(SIX):
+        for y in range(SEVEN):
             for x in range(TEN):
                 xoffset = int((self._width - TEN * self._dot_size - \
                                    (TEN - 1) * self._space) / 2.)
@@ -91,8 +95,8 @@ class Game():
         self._all_clear()
 
         # Fill in a few dots to start
-        for i in range(int(TEN * SIX / 2)):
-            n = int(uniform(0, TEN * SIX))
+        for i in range(int(TEN)):
+            n = int(uniform(0, TEN * SEVEN))
             self._dots[n].type = 2
             self._dots[n].set_shape(self._new_dot(
                     self._colors[1]))
@@ -125,61 +129,62 @@ class Game():
         counter = 0
         x, y = self._dot_to_grid(self._dots.index(spr))
         if x > 0 and y > 0 and \
-           count_type == self._dots[self._grid_to_dot((x - 1, y - 1))].type:
+           self._dots[self._grid_to_dot((x - 1, y - 1))].type in count_type:
             counter += 1
         if x > 0 and \
-           count_type == self._dots[self._grid_to_dot((x - 1, y))].type:
+           self._dots[self._grid_to_dot((x - 1, y))].type in count_type:
             counter += 1
-        if x > 0 and y < SIX - 1 and \
-           count_type == self._dots[self._grid_to_dot((x - 1, y + 1))].type:
+        if x > 0 and y < SEVEN - 1 and \
+           self._dots[self._grid_to_dot((x - 1, y + 1))].type in count_type:
             counter += 1
         if y > 0 and \
-           count_type == self._dots[self._grid_to_dot((x, y - 1))].type:
+           self._dots[self._grid_to_dot((x, y - 1))].type in count_type:
             counter += 1
-        if y < SIX - 1 and \
-           count_type == self._dots[self._grid_to_dot((x, y + 1))].type:
+        if y < SEVEN - 1 and \
+           self._dots[self._grid_to_dot((x, y + 1))].type in count_type:
             counter += 1
         if x < TEN - 1 and y > 0 and \
-           count_type == self._dots[self._grid_to_dot((x + 1, y - 1))].type:
+           self._dots[self._grid_to_dot((x + 1, y - 1))].type in count_type:
             counter += 1
         if x < TEN - 1 and \
-           count_type == self._dots[self._grid_to_dot((x + 1, y))].type:
+           self._dots[self._grid_to_dot((x + 1, y))].type in count_type:
             counter += 1
-        if x < TEN - 1 and y < SIX - 1 and \
-           count_type == self._dots[self._grid_to_dot((x + 1, y + 1))].type:
+        if x < TEN - 1 and y < SEVEN - 1 and \
+           self._dots[self._grid_to_dot((x + 1, y + 1))].type in count_type:
             counter += 1
         return counter
 
     def _floodfill(self, old_type, spr):
-        if spr.type != old_type:
+        if spr.type not in old_type:
             return
 
         spr.type = 0
         spr.set_shape(self._new_dot(self._colors[spr.type]))
-        counter = self._count(2, spr)
-        if counter > 0:
-            spr.set_label(str(counter))
-        else:
-            spr.set_label('')
         if self.we_are_sharing:
             _logger.debug('sending a click to the share')
             self._parent.send_dot_click(self._dots.index(spr), spr.type)
 
         self._test_game_over()
 
-        x, y = self._dot_to_grid(self._dots.index(spr))
-        if x > 0:
-            self._floodfill(old_type,
-                            self._dots[self._grid_to_dot((x - 1, y))])
-        if x < TEN - 1:
-            self._floodfill(old_type,
-                            self._dots[self._grid_to_dot((x + 1, y))])
-        if y > 0:
-            self._floodfill(old_type,
-                            self._dots[self._grid_to_dot((x, y - 1))])
-        if y < SIX - 1:
-            self._floodfill(old_type,
-                            self._dots[self._grid_to_dot((x, y + 1))])
+        counter = self._count([2, 4], spr)
+        if counter > 0:
+            spr.set_label(str(counter))
+        else:
+            spr.set_label('')
+
+            x, y = self._dot_to_grid(self._dots.index(spr))
+            if x > 0:
+                self._floodfill(old_type,
+                                self._dots[self._grid_to_dot((x - 1, y))])
+            if x < TEN - 1:
+                self._floodfill(old_type,
+                                self._dots[self._grid_to_dot((x + 1, y))])
+            if y > 0:
+                self._floodfill(old_type,
+                                self._dots[self._grid_to_dot((x, y - 1))])
+            if y < SEVEN - 1:
+                self._floodfill(old_type,
+                                self._dots[self._grid_to_dot((x, y + 1))])
 
     def _button_press_cb(self, win, event):
         win.grab_focus()
@@ -191,15 +196,21 @@ class Game():
 
         if event.button > 1:
             if spr.type != 0:
-                spr.set_shape(self._new_dot(self._colors[2]))
+                if spr.type in [1, 2]:
+                    spr.set_shape(self._new_dot(self._colors[2]))
+                    spr.type += 2
+                else:  # elif spr.type in [3, 4]:
+                    spr.set_shape(self._new_dot(self._colors[1]))
+                    spr.type -= 2
             return True
 
-        if spr.type == 2:
+        if spr.type in [2, 4]:
+            spr.set_shape(self._new_dot(self._colors[4]))
             self._frown()
             return True
             
         if spr.type is not None:
-            self._floodfill(spr.type, spr)
+            self._floodfill([1, 3], spr)
 
         return True
 
@@ -214,11 +225,13 @@ class Game():
 
     def _smile(self):
         for dot in self._dots:
-            dot.set_label(':)')
+            if dot.type == 0:
+                dot.set_label(':)')
 
     def _frown(self):
         for dot in self._dots:
-            dot.set_label(':(')
+            if dot.type == 0:
+                dot.set_label(':(')
 
     def _test_game_over(self):
         ''' Check to see if game is over '''
@@ -260,11 +273,18 @@ class Game():
             self._fill = color
             self._svg_width = self._dot_size
             self._svg_height = self._dot_size
-            pixbuf = svg_str_to_pixbuf(
-                self._header() + \
-                self._circle(self._dot_size / 2., self._dot_size / 2.,
-                             self._dot_size / 2.) + \
-                self._footer())
+
+            i = self._colors.index(color)
+            if PATHS[i] is False:
+                pixbuf = svg_str_to_pixbuf(
+                    self._header() + \
+                    self._circle(self._dot_size / 2., self._dot_size / 2.,
+                                 self._dot_size / 2.) + \
+                    self._footer())
+            else:
+                pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                    os.path.join(self._path, PATHS[i]),
+                    self._svg_width, self._svg_height)
 
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
                                          self._svg_width, self._svg_height)
