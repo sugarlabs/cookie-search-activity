@@ -12,6 +12,7 @@
 
 
 import gtk
+import gobject
 import cairo
 import os
 from random import uniform
@@ -41,17 +42,16 @@ class Game():
 
     def __init__(self, canvas, parent=None, path=None,
                  colors=['#A0FFA0', '#FF8080']):
-        self._activity = parent
+        self._canvas = canvas
+        self._parent = parent
+        self._parent.show_all()
+        self._path = path
+
         self._colors = ['#FFFFFF']
         self._colors.append(colors[0])
         self._colors.append(colors[1])
         self._colors.append(colors[0])
         self._colors.append('#FF0000')
-
-        self._canvas = canvas
-        parent.show_all()
-        self._parent = parent
-        self._path = path
 
         self._canvas.set_flags(gtk.CAN_FOCUS)
         self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
@@ -64,6 +64,9 @@ class Game():
         self._dot_size = int(DOT_SIZE * self._scale)
         self._space = int(self._dot_size / 5.)
         self.we_are_sharing = False
+
+        self._start_time = 0
+        self._timeout_id = None
 
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
@@ -89,6 +92,7 @@ class Game():
                 dot.type = 1
                 dot.set_shape(self._new_dot(self._colors[dot.type]))
             dot.set_label('')
+        self._stop_timer()
 
     def new_game(self):
         ''' Start a new game. '''
@@ -104,6 +108,8 @@ class Game():
         if self.we_are_sharing:
             _logger.debug('sending a new game')
             self._parent.send_new_game()
+
+        self._start_timer()
 
     def restore_game(self, dot_list):
         ''' Restore a game from the Journal or share '''
@@ -122,7 +128,7 @@ class Game():
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''
-        self._activity.status.set_label(string)
+        self._parent.status.set_label(string)
 
     def _count(self, count_type, spr):
         ''' Count the number of surrounding dots of type count_type '''
@@ -223,6 +229,22 @@ class Game():
         _logger.debug('enabling sharing')
         self.we_are_sharing = share
 
+    def _counter(self):
+        ''' Display of seconds since start_time. '''
+        self._set_label(str(
+                int(gobject.get_current_time() - self._start_time)))
+        self._timeout_id = gobject.timeout_add(1000, self._counter)
+
+    def _start_timer(self):
+        ''' Start/reset the timer '''
+        self._start_time = gobject.get_current_time()
+        self._timeout_id = None
+        self._counter()
+
+    def _stop_timer(self):
+        if self._timeout_id is not None:
+            gobject.source_remove(self._timeout_id)
+
     def _smile(self):
         for dot in self._dots:
             if dot.type == 0:
@@ -239,6 +261,7 @@ class Game():
             if dot.type == 1:
                 return False
         self._smile()
+        self._stop_timer()
         return True
 
     def _grid_to_dot(self, pos):
