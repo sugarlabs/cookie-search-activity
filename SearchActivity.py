@@ -56,6 +56,8 @@ class SearchActivity(activity.Activity):
         except dbus.exceptions.DBusException, e:
             _logger.error(str(e))
 
+        self.path = activity.get_bundle_path()
+
         self.nick = profile.get_nick_name()
         if profile.get_color() is not None:
             self.colors = profile.get_color().to_string().split(',')
@@ -73,7 +75,8 @@ class SearchActivity(activity.Activity):
         canvas.show()
         self.show_all()
 
-        self._game = Game(canvas, parent=self, colors=self.colors)
+        self._game = Game(canvas, parent=self, path=self.path,
+                          colors=self.colors)
         self._setup_presence_service()
 
         if 'dotlist' in self.metadata:
