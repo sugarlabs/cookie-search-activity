@@ -192,14 +192,15 @@ class Game():
 
         if event.button > 1:
             if spr.type != 0:
-                if spr.type in [1, 2]:
-                    spr.set_shape(self._new_dot(self._colors[2]))
-                    spr.type += 2
-                else:  # elif spr.type in [3, 4]:
-                    spr.set_shape(self._new_dot(self._colors[1]))
-                    spr.type -= 2
-            self._test_game_over()
+                self._flip_the_cookie(spr)
             return True
+        else:
+            if spr.type != 0:
+                red, green, blue, alpha = spr.get_pixel((x, y))
+                _logger.debug('red %d' % (red))
+                if red > 40 and red < 240:  # touched the cookie
+                    self._flip_the_cookie(spr)
+                    return True
 
         if spr.type in [2, 4]:
             spr.set_shape(self._new_dot(self._colors[4]))
@@ -211,6 +212,15 @@ class Game():
             self._test_game_over()
 
         return True
+
+    def _flip_the_cookie(self, spr):
+        if spr.type in [1, 2]:
+            spr.set_shape(self._new_dot(self._colors[2]))
+            spr.type += 2
+        else:  # elif spr.type in [3, 4]:
+            spr.set_shape(self._new_dot(self._colors[1]))
+            spr.type -= 2
+        self._test_game_over()
 
     def remote_button_press(self, dot, color):
         ''' Receive a button press from a sharer '''
