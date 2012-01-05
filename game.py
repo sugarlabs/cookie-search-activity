@@ -101,9 +101,13 @@ class Game():
         # Fill in a few dots to start
         for i in range(int(TEN)):
             n = int(uniform(0, TEN * SEVEN))
-            self._dots[n].type = 2
-            self._dots[n].set_shape(self._new_dot(
-                    self._colors[1]))
+            while True:
+                if self._dots[n].type == 1:
+                    self._dots[n].type = 2
+                    self._dots[n].set_shape(self._new_dot(self._colors[1]))
+                    break
+                else:
+                    n = int(uniform(0, TEN * SEVEN))
 
         if self.we_are_sharing:
             _logger.debug('sending a new game')
@@ -130,34 +134,34 @@ class Game():
         ''' Set the label in the toolbar or the window frame. '''
         self._parent.status.set_label(string)
 
+    def _neighbors(self, spr):
+        ''' Return the list of surrounding dots '''
+        neighbors = []
+        x, y = self._dot_to_grid(self._dots.index(spr))
+        if x > 0 and y > 0:
+            neighbors.append(self._dots[self._grid_to_dot((x - 1, y - 1))])
+        if x > 0:
+            neighbors.append(self._dots[self._grid_to_dot((x - 1, y))])
+        if x > 0 and y < SEVEN - 1:
+            neighbors.append(self._dots[self._grid_to_dot((x - 1, y + 1))])
+        if y > 0:
+            neighbors.append(self._dots[self._grid_to_dot((x, y - 1))])
+        if y < SEVEN - 1:
+            neighbors.append(self._dots[self._grid_to_dot((x, y + 1))])
+        if x < TEN - 1 and y > 0:
+            neighbors.append(self._dots[self._grid_to_dot((x + 1, y - 1))])
+        if x < TEN - 1:
+            neighbors.append(self._dots[self._grid_to_dot((x + 1, y))])
+        if x < TEN - 1 and y < SEVEN - 1:
+            neighbors.append(self._dots[self._grid_to_dot((x + 1, y + 1))])
+        return neighbors
+
     def _count(self, count_type, spr):
         ''' Count the number of surrounding dots of type count_type '''
         counter = 0
-        x, y = self._dot_to_grid(self._dots.index(spr))
-        if x > 0 and y > 0 and \
-           self._dots[self._grid_to_dot((x - 1, y - 1))].type in count_type:
-            counter += 1
-        if x > 0 and \
-           self._dots[self._grid_to_dot((x - 1, y))].type in count_type:
-            counter += 1
-        if x > 0 and y < SEVEN - 1 and \
-           self._dots[self._grid_to_dot((x - 1, y + 1))].type in count_type:
-            counter += 1
-        if y > 0 and \
-           self._dots[self._grid_to_dot((x, y - 1))].type in count_type:
-            counter += 1
-        if y < SEVEN - 1 and \
-           self._dots[self._grid_to_dot((x, y + 1))].type in count_type:
-            counter += 1
-        if x < TEN - 1 and y > 0 and \
-           self._dots[self._grid_to_dot((x + 1, y - 1))].type in count_type:
-            counter += 1
-        if x < TEN - 1 and \
-           self._dots[self._grid_to_dot((x + 1, y))].type in count_type:
-            counter += 1
-        if x < TEN - 1 and y < SEVEN - 1 and \
-           self._dots[self._grid_to_dot((x + 1, y + 1))].type in count_type:
-            counter += 1
+        for dot in self._neighbors(spr):
+            if dot.type in count_type:
+                counter += 1
         return counter
 
     def _floodfill(self, old_type, spr):
@@ -170,27 +174,13 @@ class Game():
             _logger.debug('sending a click to the share')
             self._parent.send_dot_click(self._dots.index(spr), spr.type)
 
-        self._test_game_over()
-
         counter = self._count([2, 4], spr)
         if counter > 0:
             spr.set_label(str(counter))
         else:
             spr.set_label('')
-
-            x, y = self._dot_to_grid(self._dots.index(spr))
-            if x > 0:
-                self._floodfill(old_type,
-                                self._dots[self._grid_to_dot((x - 1, y))])
-            if x < TEN - 1:
-                self._floodfill(old_type,
-                                self._dots[self._grid_to_dot((x + 1, y))])
-            if y > 0:
-                self._floodfill(old_type,
-                                self._dots[self._grid_to_dot((x, y - 1))])
-            if y < SEVEN - 1:
-                self._floodfill(old_type,
-                                self._dots[self._grid_to_dot((x, y + 1))])
+            for dot in self._neighbors(spr):
+                self._floodfill(old_type, dot)
 
     def _button_press_cb(self, win, event):
         win.grab_focus()
@@ -208,6 +198,7 @@ class Game():
                 else:  # elif spr.type in [3, 4]:
                     spr.set_shape(self._new_dot(self._colors[1]))
                     spr.type -= 2
+            self._test_game_over()
             return True
 
         if spr.type in [2, 4]:
@@ -217,6 +208,7 @@ class Game():
             
         if spr.type is not None:
             self._floodfill([1, 3], spr)
+            self._test_game_over()
 
         return True
 
@@ -258,7 +250,7 @@ class Game():
     def _test_game_over(self):
         ''' Check to see if game is over '''
         for dot in self._dots:
-            if dot.type == 1:
+            if dot.type == 1 or dot.type == 2:
                 return False
         self._smile()
         self._stop_timer()
