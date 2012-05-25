@@ -36,6 +36,11 @@ from sugar.presence.tubeconn import TubeConnection
 
 from gettext import gettext as _
 
+import json
+from json import load as jload
+from json import dump as jdump
+from StringIO import StringIO
+
 from game import Game
 
 import logging
@@ -57,6 +62,7 @@ class SearchActivity(activity.Activity):
             _logger.error(str(e))
 
         self.path = activity.get_bundle_path()
+        self.all_scores = []
 
         self.nick = profile.get_nick_name()
         if profile.get_color() is not None:
@@ -102,6 +108,10 @@ class SearchActivity(activity.Activity):
             toolbox.show()
             self.toolbar = toolbox.toolbar
 
+            export_scores = button_factory(
+                'score-copy', activity_button,
+                self._write_scores_to_clipboard,
+                tooltip=_('Export scores to clipboard'))
         else:
             # Use pre-0.86 toolbar design
             games_toolbar = gtk.Toolbar()
@@ -139,6 +149,13 @@ class SearchActivity(activity.Activity):
             self.metadata['dotlist'] += str(dot)
             if dot_list.index(dot) < len(dot_list) - 1:
                 self.metadata['dotlist'] += ' '
+        self.metadata['all_scores'] = \
+            self._data_dumper(self.all_scores)
+
+    def _data_dumper(self, data):
+        io = StringIO()
+        jdump(data, io)
+        return io.getvalue()
 
     def _restore(self):
         """ Restore the game state from metadata """
@@ -147,6 +164,23 @@ class SearchActivity(activity.Activity):
         for dot in dots:
             dot_list.append(int(dot))
         self._game.restore_game(dot_list)
+        if 'all_scores' in self.metadata:
+            self.all_scores = self._data_loader(self.metadata['all_scores'])
+        else:
+            self.all_scores = []
+        _logger.debug(self.all_scores)
+
+    def _data_loader(self, data):
+        io = StringIO(data)
+        return jload(io)
+
+    def _write_scores_to_clipboard(self, button=None):
+        ''' SimpleGraph will plot the cululative results '''
+        _logger.debug(self.all_scores)
+        scores = ''
+        for i, s in enumerate(self.all_scores):
+            scores += '%s: %s\n' % (str(i + 1), s)
+        gtk.Clipboard().set_text(scores)
 
     # Collaboration-related methods
 

@@ -197,7 +197,6 @@ class Game():
         else:
             if spr.type != 0:
                 red, green, blue, alpha = spr.get_pixel((x, y))
-                _logger.debug('red %d' % (red))
                 if red > 40 and red < 240:  # clicked the cookie
                     self._flip_the_cookie(spr)
                     return True
@@ -233,8 +232,8 @@ class Game():
 
     def _counter(self):
         ''' Display of seconds since start_time. '''
-        self._set_label(str(
-                int(gobject.get_current_time() - self._start_time)))
+        self._set_label(
+            str(int(gobject.get_current_time() - self._start_time)))
         self._timeout_id = gobject.timeout_add(1000, self._counter)
 
     def _start_timer(self):
@@ -250,18 +249,21 @@ class Game():
     def _smile(self):
         for dot in self._dots:
             if dot.type == 0:
-                dot.set_label(':)')
+                dot.set_label('☻')
 
     def _frown(self):
         for dot in self._dots:
             if dot.type == 0:
-                dot.set_label(':(')
+                dot.set_label('☹')
 
     def _test_game_over(self):
         ''' Check to see if game is over '''
         for dot in self._dots:
             if dot.type == 1 or dot.type == 2:
                 return False
+        self._parent.all_scores.append(
+            str(int(gobject.get_current_time() - self._start_time)))
+        _logger.debug(self._parent.all_scores)
         self._smile()
         self._stop_timer()
         return True
