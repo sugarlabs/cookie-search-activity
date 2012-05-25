@@ -20,7 +20,7 @@ from random import uniform
 from gettext import gettext as _
 
 import logging
-_logger = logging.getLogger('search-activity')
+_logger = logging.getLogger('cookie-search-activity')
 
 try:
     from sugar.graphics import style

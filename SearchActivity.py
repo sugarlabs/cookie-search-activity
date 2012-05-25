@@ -44,10 +44,10 @@ from StringIO import StringIO
 from game import Game
 
 import logging
-_logger = logging.getLogger('search-activity')
+_logger = logging.getLogger('cookie-search-activity')
 
 
-SERVICE = 'org.sugarlabs.SearchActivity'
+SERVICE = 'org.sugarlabs.CookieSearchActivity'
 IFACE = SERVICE
 
 
