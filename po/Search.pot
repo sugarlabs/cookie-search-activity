@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-22 19:08-0500\n"
+"POT-Creation-Date: 2012-05-25 13:58-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,10 +21,14 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: MinesActivity.py:107
+#: SearchActivity.py:114
+msgid "Export scores to clipboard"
+msgstr ""
+
+#: SearchActivity.py:120
 msgid "Game"
 msgstr ""
 
-#: MinesActivity.py:114
+#: SearchActivity.py:127
 msgid "Start a new game."
 msgstr ""
