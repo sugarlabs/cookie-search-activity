@@ -34,7 +34,7 @@ from sprites import Sprites, Sprite
 TEN = 10
 SEVEN = 7
 DOT_SIZE = 40
-PATHS = [False, 'cookiemonster.jpg', 'cookie.jpg', 'cookie.jpg',
+PATHS = [False, 'turtle-monster.jpg', 'cookie.jpg', 'cookie.jpg',
          'bitten-cookie.jpg']
 
 
@@ -190,7 +190,7 @@ class Game():
         if spr == None:
             return
 
-        if event.button > 1:
+        if event.button > 1:  # right click
             if spr.type != 0:
                 self._flip_the_cookie(spr)
             return True
@@ -198,7 +198,7 @@ class Game():
             if spr.type != 0:
                 red, green, blue, alpha = spr.get_pixel((x, y))
                 _logger.debug('red %d' % (red))
-                if red > 40 and red < 240:  # touched the cookie
+                if red > 40 and red < 240:  # clicked the cookie
                     self._flip_the_cookie(spr)
                     return True
 
