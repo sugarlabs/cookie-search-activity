@@ -10,9 +10,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-
-import gtk
-import gobject
+from gi.repository import Gtk, GObject, GdkPixbuf, Gdk
 import cairo
 import os
 from random import uniform
@@ -23,7 +21,7 @@ import logging
 _logger = logging.getLogger('cookie-search-activity')
 
 try:
-    from sugar.graphics import style
+    from sugar3.graphics import style
     GRID_CELL_SIZE = style.GRID_CELL_SIZE
 except ImportError:
     GRID_CELL_SIZE = 0
@@ -53,13 +51,12 @@ class Game():
         self._colors.append(colors[0])
         self._colors.append('#FF0000')
 
-        self._canvas.set_flags(gtk.CAN_FOCUS)
-        self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self._canvas.connect("expose-event", self._expose_cb)
+        self._canvas.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self._canvas.connect("draw", self.__draw_cb)
         self._canvas.connect("button-press-event", self._button_press_cb)
 
-        self._width = gtk.gdk.screen_width()
-        self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
+        self._width = Gdk.Screen.width()
+        self._height = Gdk.Screen.height() - (GRID_CELL_SIZE * 1.5)
         self._scale = self._width / (10 * DOT_SIZE * 1.2)
         self._dot_size = int(DOT_SIZE * self._scale)
         self._space = int(self._dot_size / 5.)
@@ -84,7 +81,8 @@ class Game():
                 self._dots[-1].set_label_attributes(40)
 
         self._all_clear()
-
+    def __draw_cb(self, canvas, cr):
+		self._sprites.redraw_sprites(cr=cr)
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
         for dot in self._dots:
@@ -186,7 +184,7 @@ class Game():
         win.grab_focus()
         x, y = map(int, event.get_coords())
 
-        spr = self._sprites.find_sprite((x, y), inverse=True)
+        spr = self._sprites.find_sprite((x, y))
         if spr == None:
             return
 
@@ -197,7 +195,7 @@ class Game():
         else:
             if spr.type != 0:
                 red, green, blue, alpha = spr.get_pixel((x, y))
-                if red > 190 and red < 210:  # clicked the cookie
+                if red > 190 and red < 215:  # clicked the cookie
                     self._flip_the_cookie(spr)
                     return True
 
@@ -233,18 +231,18 @@ class Game():
     def _counter(self):
         ''' Display of seconds since start_time. '''
         self._set_label(
-            str(int(gobject.get_current_time() - self._start_time)))
-        self._timeout_id = gobject.timeout_add(1000, self._counter)
+            str(int(GObject.get_current_time() - self._start_time)))
+        self._timeout_id = GObject.timeout_add(1000, self._counter)
 
     def _start_timer(self):
         ''' Start/reset the timer '''
-        self._start_time = gobject.get_current_time()
+        self._start_time = GObject.get_current_time()
         self._timeout_id = None
         self._counter()
 
     def _stop_timer(self):
         if self._timeout_id is not None:
-            gobject.source_remove(self._timeout_id)
+            GObject.source_remove(self._timeout_id)
 
     def _smile(self):
         for dot in self._dots:
@@ -262,7 +260,7 @@ class Game():
             if dot.type == 1 or dot.type == 2:
                 return False
         self._parent.all_scores.append(
-            str(int(gobject.get_current_time() - self._start_time)))
+            str(int(GObject.get_current_time() - self._start_time)))
         _logger.debug(self._parent.all_scores)
         self._smile()
         self._stop_timer()
@@ -290,7 +288,7 @@ class Game():
         self._sprites.redraw_sprites(cr=cr)
 
     def _destroy_cb(self, win, event):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
@@ -309,15 +307,14 @@ class Game():
                                  self._dot_size / 2.) + \
                     self._footer())
             else:
-                pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     os.path.join(self._path, PATHS[i]),
                     self._svg_width, self._svg_height)
 
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
                                          self._svg_width, self._svg_height)
             context = cairo.Context(surface)
-            context = gtk.gdk.CairoContext(context)
-            context.set_source_pixbuf(pixbuf, 0, 0)
+            Gdk.cairo_set_source_pixbuf(context, pixbuf, 0, 0)
             context.rectangle(0, 0, self._svg_width, self._svg_height)
             context.fill()
             self._dot_cache[color] = surface
@@ -370,7 +367,7 @@ class Game():
 
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
-    pl = gtk.gdk.PixbufLoader('svg')
+    pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
     pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()

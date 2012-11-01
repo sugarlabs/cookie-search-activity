@@ -10,19 +10,13 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import gtk
+from gi.repository  import Gtk, Gdk
 
-from sugar.activity import activity
-from sugar import profile
-try:
-    from sugar.graphics.toolbarbox import ToolbarBox
-    _have_toolbox = True
-except ImportError:
-    _have_toolbox = False
-
-if _have_toolbox:
-    from sugar.activity.widgets import ActivityToolbarButton
-    from sugar.activity.widgets import StopButton
+from sugar3.activity import activity
+from sugar3 import profile
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.activity.widgets import StopButton
 
 from toolbar_utils import button_factory, label_factory, separator_factory
 from utils import json_load, json_dump
@@ -31,8 +25,8 @@ import telepathy
 import dbus
 from dbus.service import signal
 from dbus.gobject_service import ExportedGObject
-from sugar.presence import presenceservice
-from sugar.presence.tubeconn import TubeConnection
+from sugar3.presence import presenceservice
+from sugar3.presence.tubeconn import TubeConnection
 
 from gettext import gettext as _
 
@@ -70,13 +64,13 @@ class SearchActivity(activity.Activity):
         else:
             self.colors = ['#A0FFA0', '#FF8080']
 
-        self._setup_toolbars(_have_toolbox)
+        self._setup_toolbars()
         self._setup_dispatch_table()
 
         # Create a canvas
-        canvas = gtk.DrawingArea()
-        canvas.set_size_request(gtk.gdk.screen_width(), \
-                                gtk.gdk.screen_height())
+        canvas = Gtk.DrawingArea()
+        canvas.set_size_request(Gdk.Screen.width(), \
+                                Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()
         self.show_all()
@@ -90,52 +84,43 @@ class SearchActivity(activity.Activity):
         else:
             self._game.new_game()
 
-    def _setup_toolbars(self, have_toolbox):
+    def _setup_toolbars(self):
         """ Setup the toolbars. """
 
         self.max_participants = 4
 
-        if have_toolbox:
-            toolbox = ToolbarBox()
+        toolbox = ToolbarBox()
 
-            # Activity toolbar
-            activity_button = ActivityToolbarButton(self)
+        # Activity toolbar
+        activity_button = ActivityToolbarButton(self)
 
-            toolbox.toolbar.insert(activity_button, 0)
-            activity_button.show()
+        toolbox.toolbar.insert(activity_button, 0)
+        activity_button.show()
 
-            self.set_toolbar_box(toolbox)
-            toolbox.show()
-            self.toolbar = toolbox.toolbar
+        self.set_toolbar_box(toolbox)
+        toolbox.show()
+        self.toolbar = toolbox.toolbar
 
-            export_scores = button_factory(
-                'score-copy', activity_button,
-                self._write_scores_to_clipboard,
-                tooltip=_('Export scores to clipboard'))
-        else:
-            # Use pre-0.86 toolbar design
-            games_toolbar = gtk.Toolbar()
-            toolbox = activity.ActivityToolbox(self)
-            self.set_toolbox(toolbox)
-            toolbox.add_toolbar(_('Game'), games_toolbar)
-            toolbox.show()
-            toolbox.set_current_toolbar(1)
-            self.toolbar = games_toolbar
+        export_scores = button_factory(
+            'score-copy',
+            activity_button,
+            self._write_scores_to_clipboard,
+            tooltip=_('Export scores to clipboard'))
 
         self._new_game_button_h = button_factory(
-            'new-game', self.toolbar, self._new_game_cb,
+            'new-game',
+            self.toolbar,
+            self._new_game_cb,
             tooltip=_('Start a new game.'))
 
-        self.status = label_factory(self.toolbar, '')
+        self.status = label_factory(self.toolbar, '', width=200)
 
-        if _have_toolbox:
-            separator_factory(toolbox.toolbar, True, False)
+        separator_factory(toolbox.toolbar, True, False)
 
-        if _have_toolbox:
-            stop_button = StopButton(self)
-            stop_button.props.accelerator = '<Ctrl>q'
-            toolbox.toolbar.insert(stop_button, -1)
-            stop_button.show()
+        stop_button = StopButton(self)
+        stop_button.props.accelerator = '<Ctrl>q'
+        toolbox.toolbar.insert(stop_button, -1)
+        stop_button.show()
 
     def _new_game_cb(self, button=None):
         ''' Start a new game. '''
@@ -180,7 +165,7 @@ class SearchActivity(activity.Activity):
         scores = ''
         for i, s in enumerate(self.all_scores):
             scores += '%s: %s\n' % (str(i + 1), s)
-        gtk.Clipboard().set_text(scores)
+        Gtk.Clipboard().set_text(scores)
 
     # Collaboration-related methods
 
