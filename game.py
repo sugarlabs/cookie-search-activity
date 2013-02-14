@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#Copyright (c) 2011 Walter Bender
+#Copyright (c) 2011-13 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,11 +20,10 @@ from gettext import gettext as _
 import logging
 _logger = logging.getLogger('cookie-search-activity')
 
-try:
-    from sugar3.graphics import style
-    GRID_CELL_SIZE = style.GRID_CELL_SIZE
-except ImportError:
-    GRID_CELL_SIZE = 0
+from sugar3.graphics.alert import Alert
+from sugar3.graphics.icon import Icon
+from sugar3.graphics import style
+GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 from sprites import Sprites, Sprite
 
@@ -81,8 +80,10 @@ class Game():
                 self._dots[-1].set_label_attributes(40)
 
         self._all_clear()
+
     def __draw_cb(self, canvas, cr):
 		self._sprites.redraw_sprites(cr=cr)
+
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
         for dot in self._dots:
@@ -245,14 +246,18 @@ class Game():
             GObject.source_remove(self._timeout_id)
 
     def _smile(self):
+        self._stop_timer()
         for dot in self._dots:
             if dot.type == 0:
                 dot.set_label('☻')
+        self._new_game_alert()
 
     def _frown(self):
+        self._stop_timer()
         for dot in self._dots:
             if dot.type == 0:
                 dot.set_label('☹')
+        self._new_game_alert()
 
     def _test_game_over(self):
         ''' Check to see if game is over '''
@@ -263,7 +268,6 @@ class Game():
             str(int(GObject.get_current_time() - self._start_time)))
         _logger.debug(self._parent.all_scores)
         self._smile()
-        self._stop_timer()
         return True
 
     def _grid_to_dot(self, pos):
@@ -273,6 +277,25 @@ class Game():
     def _dot_to_grid(self, dot):
         ''' calculate the grid column and row for a dot '''
         return [dot % TEN, int(dot / TEN)]
+
+    def _new_game_alert(self):
+        alert = Alert()
+        alert.props.title = _('New game')
+        alert.props.msg = _('Do you want to play a new game?')
+        icon = Icon(icon_name='dialog-cancel')
+        alert.add_button(Gtk.ResponseType.CANCEL, _('Cancel'), icon)
+        icon.show()
+        ok_icon = Icon(icon_name='dialog-ok')
+        alert.add_button(Gtk.ResponseType.OK, _('New game'), ok_icon)
+        ok_icon.show()
+        alert.connect('response', self.__game_alert_response_cb)
+        self._parent.add_alert(alert)
+        alert.show()
+
+    def __game_alert_response_cb(self, alert, response_id):
+        self._parent.remove_alert(alert)
+        if response_id is Gtk.ResponseType.OK:
+            self.new_game()
 
     def _expose_cb(self, win, event):
         self.do_expose_event(event)
