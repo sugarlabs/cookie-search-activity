@@ -55,8 +55,9 @@ class Game():
         self._canvas.connect("button-press-event", self._button_press_cb)
 
         self._width = Gdk.Screen.width()
-        self._height = Gdk.Screen.height() - (GRID_CELL_SIZE * 1.5)
-        self._scale = self._width / (10 * DOT_SIZE * 1.2)
+        self._height = Gdk.Screen.height() - GRID_CELL_SIZE
+        self._scale = min(self._width / (10 * DOT_SIZE * 1.2),
+                          self._height / (7 * DOT_SIZE * 1.2))
         self._dot_size = int(DOT_SIZE * self._scale)
         self._space = int(self._dot_size / 5.)
         self.we_are_sharing = False
@@ -118,8 +119,17 @@ class Game():
         ''' Restore a game from the Journal or share '''
         for i, dot in enumerate(dot_list):
             self._dots[i].type = dot
-            self._dots[i].set_shape(self._new_dot(
-                    self._colors[self._dots[i].type]))
+            if dot in [4]:  # marked by user
+                self._dots[i].set_shape(self._new_dot(self._colors[2]))
+            elif dot in [1, 2]:  # unmarked
+                self._dots[i].set_shape(self._new_dot(self._colors[1]))
+            else:  # revealed by user
+                self._dots[i].set_shape(self._new_dot(self._colors[0]))
+        for i, dot in enumerate(dot_list):
+            if dot == 0:  # label with count
+                count = self._count([2, 4], self._dots[i])
+                if count > 0:
+                    self._dots[i].set_label(count)
 
     def save_game(self):
         ''' Return dot list for saving to Journal or
