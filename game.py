@@ -56,8 +56,17 @@ class Game():
 
         self._width = Gdk.Screen.width()
         self._height = Gdk.Screen.height() - GRID_CELL_SIZE
-        self._scale = min(self._width / (10 * DOT_SIZE * 1.2),
-                          self._height / (7 * DOT_SIZE * 1.2))
+        if self._width < self._height:
+            self.portrait = True
+            self.seven = TEN
+            self.ten = SEVEN
+        else:
+            self.portrait = False
+            self.seven = SEVEN
+            self.ten = TEN
+        self._scale = min(self._width / (self.ten * DOT_SIZE * 1.2),
+                          self._height / (self.seven * DOT_SIZE * 1.2))
+
         self._dot_size = int(DOT_SIZE * self._scale)
         self._space = int(self._dot_size / 5.)
         self.we_are_sharing = False
@@ -68,10 +77,10 @@ class Game():
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
         self._dots = []
-        for y in range(SEVEN):
-            for x in range(TEN):
-                xoffset = int((self._width - TEN * self._dot_size - \
-                                   (TEN - 1) * self._space) / 2.)
+        for y in range(self.seven):
+            for x in range(self.ten):
+                xoffset = int((self._width - self.ten * self._dot_size - \
+                                   (self.ten - 1) * self._space) / 2.)
                 self._dots.append(
                     Sprite(self._sprites,
                            xoffset + x * (self._dot_size + self._space),
@@ -81,6 +90,32 @@ class Game():
                 self._dots[-1].set_label_attributes(40)
 
         self._all_clear()
+
+        Gdk.Screen.get_default().connect('size-changed', self._configure_cb)
+
+    def _configure_cb(self, event):
+        dot_list = self.save_game()
+
+        self._width = Gdk.Screen.width()
+        self._height = Gdk.Screen.height() - GRID_CELL_SIZE
+
+        if self._width < self._height:
+            self.portrait = True
+            self.seven = TEN
+            self.ten = SEVEN
+        else:
+            self.portrait = False
+            self.seven = SEVEN
+            self.ten = TEN
+
+        for y in range(self.seven):
+            for x in range(self.ten):
+                xoffset = int((self._width - self.ten * self._dot_size - \
+                                   (self.ten - 1) * self._space) / 2.)
+                self._dots.move((xoffset + x * (self._dot_size + self._space),
+                                 y * (self._dot_size + self._space)))
+
+        self.restore_game(dot_list)
 
     def __draw_cb(self, canvas, cr):
 		self._sprites.redraw_sprites(cr=cr)
@@ -99,15 +134,15 @@ class Game():
         self._all_clear()
 
         # Fill in a few dots to start
-        for i in range(int(TEN)):
-            n = int(uniform(0, TEN * SEVEN))
+        for i in range(int(self.ten)):
+            n = int(uniform(0, self.ten * self.seven))
             while True:
                 if self._dots[n].type == 1:
                     self._dots[n].type = 2
                     self._dots[n].set_shape(self._new_dot(self._colors[1]))
                     break
                 else:
-                    n = int(uniform(0, TEN * SEVEN))
+                    n = int(uniform(0, self.ten * self.seven))
 
         if self.we_are_sharing:
             _logger.debug('sending a new game')
@@ -151,17 +186,17 @@ class Game():
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y - 1))])
         if x > 0:
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y))])
-        if x > 0 and y < SEVEN - 1:
+        if x > 0 and y < self.seven - 1:
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y + 1))])
         if y > 0:
             neighbors.append(self._dots[self._grid_to_dot((x, y - 1))])
-        if y < SEVEN - 1:
+        if y < self.seven - 1:
             neighbors.append(self._dots[self._grid_to_dot((x, y + 1))])
-        if x < TEN - 1 and y > 0:
+        if x < self.ten - 1 and y > 0:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y - 1))])
-        if x < TEN - 1:
+        if x < self.ten - 1:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y))])
-        if x < TEN - 1 and y < SEVEN - 1:
+        if x < self.ten - 1 and y < self.seven - 1:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y + 1))])
         return neighbors
 
@@ -282,11 +317,11 @@ class Game():
 
     def _grid_to_dot(self, pos):
         ''' calculate the dot index from a column and row in the grid '''
-        return pos[0] + pos[1] * TEN
+        return pos[0] + pos[1] * self.ten
 
     def _dot_to_grid(self, dot):
         ''' calculate the grid column and row for a dot '''
-        return [dot % TEN, int(dot / TEN)]
+        return [dot % self.ten, int(dot / self.ten)]
 
     def _new_game_alert(self):
         alert = Alert()

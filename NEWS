@@ -1,5 +1,11 @@
 NEWS
 
+9
+
+ENHANCEMENT:
+* Handle screen rotation
+* Adjust to widescreen formats
+
 7
 
 BUG FIXES:
