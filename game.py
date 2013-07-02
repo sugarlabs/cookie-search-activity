@@ -108,12 +108,15 @@ class Game():
             self.seven = SEVEN
             self.ten = TEN
 
+        i = 0
         for y in range(self.seven):
             for x in range(self.ten):
                 xoffset = int((self._width - self.ten * self._dot_size - \
                                    (self.ten - 1) * self._space) / 2.)
-                self._dots.move((xoffset + x * (self._dot_size + self._space),
-                                 y * (self._dot_size + self._space)))
+                self._dots[i].move(
+                    (xoffset + x * (self._dot_size + self._space),
+                     y * (self._dot_size + self._space)))
+                i += 1
 
         self.restore_game(dot_list)
 
