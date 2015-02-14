@@ -7,3 +7,4 @@ exec = sugar-activity SearchActivity.SearchActivity
 icon = activity-search
 show_launcher = yes
 summary = search for cookies hidden behind a hungry turtle
+category = game
