@@ -1,4 +1,4 @@
-#Copyright (c) 2011 Walter Bender
+# Copyright (c) 2011 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,3 +51,12 @@ def json_dump(data):
         _io = StringIO()
         jdump(data, _io)
         return _io.getvalue()
+
+
+def convert_seconds_to_minutes(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours > 0:
+        return "%d:%02d:%02d" % (hours, minutes, seconds)
+    else:
+        return "%02d:%02d" % (minutes, seconds)
