@@ -73,7 +73,10 @@ class Game():
         self._space = int(self._dot_size / 5.)
         self.we_are_sharing = False
 
-        self._start_time = 0
+        # '-1' Workaround for showing 'second 0'
+        self._game_time_seconds = -1
+        self._game_time = "00:00"
+
         self._timeout_id = None
 
         # Generate the sprites we'll need...
@@ -170,6 +173,8 @@ class Game():
                 count = self._count([2, 4], self._dots[i])
                 if count > 0:
                     self._dots[i].set_label(count)
+
+        self._counter()
 
     def save_game(self):
         ''' Return dot list for saving to Journal or
@@ -280,15 +285,17 @@ class Game():
         self.we_are_sharing = share
 
     def _counter(self):
-        ''' Display of hours:minutes:seconds since start_time. '''
-        seconds = int(GObject.get_current_time() - self._start_time)
-        time = convert_seconds_to_minutes(seconds)
-        self._set_label(time)
+        ''' Display game_time as hours:minutes:seconds. '''
+        self._game_time_seconds += 1
+        self._game_time = convert_seconds_to_minutes(self._game_time_seconds)
+        self._set_label(self._game_time)
         self._timeout_id = GObject.timeout_add(1000, self._counter)
 
     def _start_timer(self):
         ''' Start/reset the timer '''
-        self._start_time = GObject.get_current_time()
+        # '-1' Workaround for showing 'second 0'
+        self._game_time_seconds = -1
+        self._game_time = "00:00"
         self._timeout_id = None
         self._counter()
 
@@ -315,8 +322,7 @@ class Game():
         for dot in self._dots:
             if dot.type == 1 or dot.type == 2:
                 return False
-        self._parent.all_scores.append(
-            str(int(GObject.get_current_time() - self._start_time)))
+        self._parent.all_scores.append(self._game_time)
         _logger.debug(self._parent.all_scores)
         self._smile()
         return True

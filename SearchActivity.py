@@ -19,7 +19,7 @@ from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.activity.widgets import StopButton
 
 from toolbar_utils import button_factory, label_factory, separator_factory
-from utils import json_load, json_dump
+from utils import json_load, json_dump, convert_seconds_to_minutes
 
 import telepathy
 import dbus
@@ -136,6 +136,7 @@ class SearchActivity(activity.Activity):
                 self.metadata['dotlist'] += ' '
         self.metadata['all_scores'] = \
             self._data_dumper(self.all_scores)
+        self.metadata['current_gametime'] = self._game._game_time_seconds
 
     def _data_dumper(self, data):
         io = StringIO()
@@ -144,6 +145,12 @@ class SearchActivity(activity.Activity):
 
     def _restore(self):
         """ Restore the game state from metadata """
+        # '-1' Workaround for showing last second
+        self._game._game_time_seconds = self._data_loader(
+            self.metadata['current_gametime']) - 1
+        self._game._game_time = convert_seconds_to_minutes(
+            self._game._game_time_seconds)
+
         dot_list = []
         dots = self.metadata['dotlist'].split()
         for dot in dots:
