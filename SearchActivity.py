@@ -1,4 +1,4 @@
-#Copyright (c) 2011 Walter Bender
+# Copyright (c) 2011 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,7 +10,7 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-from gi.repository  import Gtk, Gdk
+from gi.repository import Gtk, Gdk
 
 from sugar3.activity import activity
 from sugar3 import profile
@@ -52,7 +52,7 @@ class SearchActivity(activity.Activity):
         """ Initialize the toolbars and the game board """
         try:
             super(SearchActivity, self).__init__(handle)
-        except dbus.exceptions.DBusException, e:
+        except dbus.exceptions.DBusException as e:
             _logger.error(str(e))
 
         self.path = activity.get_bundle_path()
@@ -69,7 +69,7 @@ class SearchActivity(activity.Activity):
 
         # Create a canvas
         canvas = Gtk.DrawingArea()
-        canvas.set_size_request(Gdk.Screen.width(), \
+        canvas.set_size_request(Gdk.Screen.width(),
                                 Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()
@@ -232,22 +232,24 @@ params=%r state=%d' % (id, initiator, type, service, params, state))
 
         if (type == telepathy.TUBE_TYPE_DBUS and service == SERVICE):
             if state == telepathy.TUBE_STATE_LOCAL_PENDING:
-                self.tubes_chan[ \
-                              telepathy.CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
+                self.tubes_chan[
+                    telepathy.CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
 
-            tube_conn = TubeConnection(self.conn,
-                self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES], id, \
-                group_iface=self.text_chan[telepathy.CHANNEL_INTERFACE_GROUP])
+            tube_conn = TubeConnection(
+                self.conn, self.tubes_chan[
+                    telepathy.CHANNEL_TYPE_TUBES], id,
+                group_iface=self.text_chan[
+                    telepathy.CHANNEL_INTERFACE_GROUP])
 
-            self.chattube = ChatTube(tube_conn, self.initiating, \
-                self.event_received_cb)
+            self.chattube = ChatTube(tube_conn, self.initiating,
+                                     self.event_received_cb)
 
     def _setup_dispatch_table(self):
         ''' Associate tokens with commands. '''
         self._processing_methods = {
             'n': [self._receive_new_game, 'get a new game grid'],
             'p': [self._receive_dot_click, 'get a dot click'],
-            }
+        }
 
     def event_received_cb(self, event_message):
         ''' Data from a tube has arrived. '''

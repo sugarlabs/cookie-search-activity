@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#Copyright (c) 2011-13 Walter Bender
+# Copyright (c) 2011-13 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,14 +18,15 @@ from random import uniform
 from gettext import gettext as _
 
 import logging
-_logger = logging.getLogger('cookie-search-activity')
 
 from sugar3.graphics.alert import Alert
 from sugar3.graphics.icon import Icon
 from sugar3.graphics import style
-GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 from sprites import Sprites, Sprite
+
+_logger = logging.getLogger('cookie-search-activity')
+GRID_CELL_SIZE = style.GRID_CELL_SIZE
 
 # Grid dimensions must be even
 TEN = 10
@@ -79,8 +80,8 @@ class Game():
         self._dots = []
         for y in range(self.seven):
             for x in range(self.ten):
-                xoffset = int((self._width - self.ten * self._dot_size - \
-                                   (self.ten - 1) * self._space) / 2.)
+                xoffset = int((self._width - self.ten * self._dot_size -
+                               (self.ten - 1) * self._space) / 2.)
                 self._dots.append(
                     Sprite(self._sprites,
                            xoffset + x * (self._dot_size + self._space),
@@ -111,8 +112,8 @@ class Game():
         i = 0
         for y in range(self.seven):
             for x in range(self.ten):
-                xoffset = int((self._width - self.ten * self._dot_size - \
-                                   (self.ten - 1) * self._space) / 2.)
+                xoffset = int((self._width - self.ten * self._dot_size -
+                               (self.ten - 1) * self._space) / 2.)
                 self._dots[i].move(
                     (xoffset + x * (self._dot_size + self._space),
                      y * (self._dot_size + self._space)))
@@ -121,7 +122,7 @@ class Game():
         self.restore_game(dot_list)
 
     def __draw_cb(self, canvas, cr):
-		self._sprites.redraw_sprites(cr=cr)
+        self._sprites.redraw_sprites(cr=cr)
 
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
@@ -234,7 +235,7 @@ class Game():
         x, y = map(int, event.get_coords())
 
         spr = self._sprites.find_sprite((x, y))
-        if spr == None:
+        if spr is None:
             return
 
         if event.button > 1:  # right click
@@ -252,7 +253,7 @@ class Game():
             spr.set_shape(self._new_dot(self._colors[4]))
             self._frown()
             return True
-            
+
         if spr.type is not None:
             self._floodfill([1, 3], spr)
             self._test_game_over()
@@ -353,7 +354,7 @@ class Game():
         # Restrict Cairo to the exposed area
         cr = self._canvas.window.cairo_create()
         cr.rectangle(event.area.x, event.area.y,
-                event.area.width, event.area.height)
+                     event.area.width, event.area.height)
         cr.clip()
         # Refresh sprite list
         self._sprites.redraw_sprites(cr=cr)
@@ -364,7 +365,7 @@ class Game():
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
         self._dot_cache = {}
-        if not color in self._dot_cache:
+        if color not in self._dot_cache:
             self._stroke = color
             self._fill = color
             self._svg_width = self._dot_size
@@ -373,9 +374,9 @@ class Game():
             i = self._colors.index(color)
             if PATHS[i] is False:
                 pixbuf = svg_str_to_pixbuf(
-                    self._header() + \
+                    self._header() +
                     self._circle(self._dot_size / 2., self._dot_size / 2.,
-                                 self._dot_size / 2.) + \
+                                 self._dot_size / 2.) +
                     self._footer())
             else:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -398,15 +399,15 @@ class Game():
             self._svg_width = 3
             self._svg_height = self._height
             return svg_str_to_pixbuf(
-                self._header() + \
-                self._rect(3, self._height, 0, 0) + \
+                self._header() +
+                self._rect(3, self._height, 0, 0) +
                 self._footer())
         else:
             self._svg_width = self._width
             self._svg_height = 3
             return svg_str_to_pixbuf(
-                self._header() + \
-                self._rect(self._width, 3, 0, 0) + \
+                self._header() +
+                self._rect(self._width, 3, 0, 0) +
                 self._footer())
 
     def _header(self):
@@ -438,7 +439,7 @@ class Game():
 
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
-    pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
+    pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
     pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()
