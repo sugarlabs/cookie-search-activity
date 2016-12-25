@@ -24,6 +24,7 @@ from sugar3.graphics.icon import Icon
 from sugar3.graphics import style
 
 from sprites import Sprites, Sprite
+from utils import convert_seconds_to_minutes
 
 _logger = logging.getLogger('cookie-search-activity')
 GRID_CELL_SIZE = style.GRID_CELL_SIZE
@@ -279,9 +280,10 @@ class Game():
         self.we_are_sharing = share
 
     def _counter(self):
-        ''' Display of seconds since start_time. '''
-        self._set_label(
-            str(int(GObject.get_current_time() - self._start_time)))
+        ''' Display of hours:minutes:seconds since start_time. '''
+        seconds = int(GObject.get_current_time() - self._start_time)
+        time = convert_seconds_to_minutes(seconds)
+        self._set_label(time)
         self._timeout_id = GObject.timeout_add(1000, self._counter)
 
     def _start_timer(self):
