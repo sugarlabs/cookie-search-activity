@@ -113,7 +113,7 @@ class SearchActivity(activity.Activity):
             self._new_game_cb,
             tooltip=_('Start a new game.'))
 
-        self.status = label_factory(self.toolbar, '', width=200)
+        self.status = label_factory(self.toolbar, '', width=300)
 
         separator_factory(toolbox.toolbar, True, False)
 

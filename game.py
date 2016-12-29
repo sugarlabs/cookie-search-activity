@@ -45,6 +45,7 @@ class Game():
         self._parent = parent
         self._parent.show_all()
         self._path = path
+        self.level = 1
 
         self._colors = ['#FFFFFF']
         self._colors.append(colors[0])
@@ -142,7 +143,7 @@ class Game():
         self._all_clear()
 
         # Fill in a few dots to start
-        for i in range(int(self.ten)):
+        for i in range(self.level):
             n = int(uniform(0, self.ten * self.seven))
             while True:
                 if self._dots[n].type == 1:
@@ -184,9 +185,9 @@ class Game():
             dot_list.append(dot.type)
         return dot_list
 
-    def _set_label(self, string):
+    def _set_label(self, gametime):
         ''' Set the label in the toolbar or the window frame. '''
-        self._parent.status.set_label(string)
+        self._parent.status.set_label(_('Level') + ' ' + str(self.level) + ' / ' + gametime)
 
     def _neighbors(self, spr):
         ''' Return the list of surrounding dots '''
@@ -352,6 +353,8 @@ class Game():
     def __game_alert_response_cb(self, alert, response_id):
         self._parent.remove_alert(alert)
         if response_id is Gtk.ResponseType.OK:
+            if self.seven * self.ten - self.level > 1:
+                self.level += 1
             self.new_game()
 
     def _expose_cb(self, win, event):
