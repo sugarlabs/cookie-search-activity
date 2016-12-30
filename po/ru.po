@@ -2,42 +2,44 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-31 08:06-0400\n"
-"PO-Revision-Date: 2016-05-16 16:36+0000\n"
-"Last-Translator: Anonymous Pootle User\n"
+"PO-Revision-Date: 2016-04-20 23:38+0000\n"
+"Last-Translator: Anna <leonteva.anna.e@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: es\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1463416609.000000\n"
+"X-POOTLE-MTIME: 1461195534.000000\n"
 
 #: activity/activity.info:2
 msgid "CookieSearch"
-msgstr "BuscaGalletas"
+msgstr "CookieSearch"
 
 #: SearchActivity.py:108
 msgid "Export scores to clipboard"
-msgstr "Exportar puntajes al portapapeles"
+msgstr "Загрузить очки в буфер?"
 
 #: SearchActivity.py:114
 msgid "Start a new game."
-msgstr "Comenzar un nuevo juego."
+msgstr "Начать новую игру."
 
 #: game.py:293 game.py:299
 msgid "New game"
-msgstr "Nuevo juego"
+msgstr "Новая игра"
 
 #: game.py:294
 msgid "Do you want to play a new game?"
-msgstr "¿Quieres jugar una nueva partida?"
+msgstr "Хотите играть в новую игру?"
 
 #: game.py:296
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Отменить"
