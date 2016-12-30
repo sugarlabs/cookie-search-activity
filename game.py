@@ -61,14 +61,14 @@ class Game():
         self._height = Gdk.Screen.height() - GRID_CELL_SIZE
         if self._width < self._height:
             self.portrait = True
-            self.seven = TEN
-            self.ten = SEVEN
+            self.grid_height = TEN
+            self.grid.width = SEVEN
         else:
             self.portrait = False
-            self.seven = SEVEN
-            self.ten = TEN
-        self._scale = min(self._width / (self.ten * DOT_SIZE * 1.2),
-                          self._height / (self.seven * DOT_SIZE * 1.2))
+            self.grid_height = SEVEN
+            self.grid_width = TEN
+        self._scale = min(self._width / (self.grid_width * DOT_SIZE * 1.2),
+                          self._height / (self.grid_height * DOT_SIZE * 1.2))
 
         self._dot_size = int(DOT_SIZE * self._scale)
         self._space = int(self._dot_size / 5.)
@@ -83,10 +83,10 @@ class Game():
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
         self._dots = []
-        for y in range(self.seven):
-            for x in range(self.ten):
-                xoffset = int((self._width - self.ten * self._dot_size -
-                               (self.ten - 1) * self._space) / 2.)
+        for y in range(self.grid_height):
+            for x in range(self.grid_width):
+                xoffset = int((self._width - self.grid_width * self._dot_size -
+                               (self.grid_width - 1) * self._space) / 2.)
                 self._dots.append(
                     Sprite(self._sprites,
                            xoffset + x * (self._dot_size + self._space),
@@ -107,18 +107,18 @@ class Game():
 
         if self._width < self._height:
             self.portrait = True
-            self.seven = TEN
-            self.ten = SEVEN
+            self.grid_height = TEN
+            self.grid_width = SEVEN
         else:
             self.portrait = False
-            self.seven = SEVEN
-            self.ten = TEN
+            self.grid_height = SEVEN
+            self.grid_width = TEN
 
         i = 0
-        for y in range(self.seven):
-            for x in range(self.ten):
-                xoffset = int((self._width - self.ten * self._dot_size -
-                               (self.ten - 1) * self._space) / 2.)
+        for y in range(self.grid_height):
+            for x in range(self.grid_width):
+                xoffset = int((self._width - self.grid_width * self._dot_size -
+                               (self.grid_width - 1) * self._space) / 2.)
                 self._dots[i].move(
                     (xoffset + x * (self._dot_size + self._space),
                      y * (self._dot_size + self._space)))
@@ -144,14 +144,14 @@ class Game():
 
         # Fill in a few dots to start
         for i in range(self.level):
-            n = int(uniform(0, self.ten * self.seven))
+            n = int(uniform(0, self.grid_width * self.grid_height))
             while True:
                 if self._dots[n].type == 1:
                     self._dots[n].type = 2
                     self._dots[n].set_shape(self._new_dot(self._colors[1]))
                     break
                 else:
-                    n = int(uniform(0, self.ten * self.seven))
+                    n = int(uniform(0, self.grid_width * self.grid_height))
 
         if self.we_are_sharing:
             _logger.debug('sending a new game')
@@ -181,6 +181,7 @@ class Game():
         ''' Return dot list for saving to Journal or
         sharing '''
         dot_list = []
+
         for dot in self._dots:
             dot_list.append(dot.type)
         return dot_list
@@ -197,17 +198,17 @@ class Game():
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y - 1))])
         if x > 0:
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y))])
-        if x > 0 and y < self.seven - 1:
+        if x > 0 and y < self.grid_height - 1:
             neighbors.append(self._dots[self._grid_to_dot((x - 1, y + 1))])
         if y > 0:
             neighbors.append(self._dots[self._grid_to_dot((x, y - 1))])
-        if y < self.seven - 1:
+        if y < self.grid_height - 1:
             neighbors.append(self._dots[self._grid_to_dot((x, y + 1))])
-        if x < self.ten - 1 and y > 0:
+        if x < self.grid_width - 1 and y > 0:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y - 1))])
-        if x < self.ten - 1:
+        if x < self.grid_width - 1:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y))])
-        if x < self.ten - 1 and y < self.seven - 1:
+        if x < self.grid_width - 1 and y < self.grid_height - 1:
             neighbors.append(self._dots[self._grid_to_dot((x + 1, y + 1))])
         return neighbors
 
@@ -306,6 +307,7 @@ class Game():
 
     def _smile(self):
         self._stop_timer()
+        self.game_won = True
         for dot in self._dots:
             if dot.type == 0:
                 dot.set_label('☻')
@@ -313,6 +315,7 @@ class Game():
 
     def _frown(self):
         self._stop_timer()
+        self.game_won = False
         for dot in self._dots:
             if dot.type == 0:
                 dot.set_label('☹')
@@ -330,11 +333,11 @@ class Game():
 
     def _grid_to_dot(self, pos):
         ''' calculate the dot index from a column and row in the grid '''
-        return pos[0] + pos[1] * self.ten
+        return pos[0] + pos[1] * self.grid_width
 
     def _dot_to_grid(self, dot):
         ''' calculate the grid column and row for a dot '''
-        return [dot % self.ten, int(dot / self.ten)]
+        return [dot % self.grid_width, int(dot / self.grid_width)]
 
     def _new_game_alert(self):
         alert = Alert()
@@ -353,7 +356,9 @@ class Game():
     def __game_alert_response_cb(self, alert, response_id):
         self._parent.remove_alert(alert)
         if response_id is Gtk.ResponseType.OK:
-            if self.seven * self.ten - self.level > 1:
+            if self.game_won == False:
+                self.level = 1
+            elif self.grid_height * self.grid_width - self.level > 1:
                 self.level += 1
             self.new_game()
 

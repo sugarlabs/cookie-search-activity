@@ -137,6 +137,7 @@ class SearchActivity(activity.Activity):
         self.metadata['all_scores'] = \
             self._data_dumper(self.all_scores)
         self.metadata['current_gametime'] = self._game._game_time_seconds
+	self.metadata['current_level'] = self._game.level
 
     def _data_dumper(self, data):
         io = StringIO()
@@ -150,6 +151,8 @@ class SearchActivity(activity.Activity):
             self.metadata['current_gametime']) - 1
         self._game._game_time = convert_seconds_to_minutes(
             self._game._game_time_seconds)
+        if 'current_level' in self.metadata:
+            self._game.level = self._data_loader(self.metadata['current_level'])
 
         dot_list = []
         dots = self.metadata['dotlist'].split()
