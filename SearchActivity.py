@@ -138,7 +138,7 @@ class SearchActivity(activity.Activity):
         self.metadata['all_scores'] = \
             self._data_dumper(self.all_scores)
         self.metadata['current_gametime'] = self._game._game_time_seconds
-	self.metadata['current_level'] = self._game.level
+        self.metadata['current_level'] = self._game.level
 
     def _data_dumper(self, data):
         io = StringIO()
@@ -147,19 +147,25 @@ class SearchActivity(activity.Activity):
 
     def _restore(self):
         """ Restore the game state from metadata """
-        # '-1' Workaround for showing last second
-        self._game._game_time_seconds = self._data_loader(
-            self.metadata['current_gametime']) - 1
+        if 'current_gametime' in self.metadata:
+            # '-1' Workaround for showing last second
+            self._game._game_time_seconds = self._data_loader(
+                self.metadata['current_gametime']) - 1
+        else:
+            self._game._game_time_seconds = 0;
         self._game._game_time = convert_seconds_to_minutes(
             self._game._game_time_seconds)
+
         if 'current_level' in self.metadata:
             self._game.level = self._data_loader(self.metadata['current_level'])
 
-        dot_list = []
-        dots = self.metadata['dotlist'].split()
-        for dot in dots:
-            dot_list.append(int(dot))
-        self._game.restore_game(dot_list)
+        if 'dotlist' in self.metadata:
+            dot_list = []
+            dots = self.metadata['dotlist'].split()
+            for dot in dots:
+                dot_list.append(int(dot))
+            self._game.restore_game(dot_list)
+
         if 'all_scores' in self.metadata:
             self.all_scores = self._data_loader(self.metadata['all_scores'])
         else:
