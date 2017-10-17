@@ -8,37 +8,37 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-31 08:06-0400\n"
-"PO-Revision-Date: 2017-10-15 16:38+0000\n"
-"Last-Translator: Chris <cjl@sugarlabs.org>\n"
+"PO-Revision-Date: 2017-05-27 18:58+0000\n"
+"Last-Translator: François <francois.jarriges@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ibo\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1508085480.000000\n"
+"X-POOTLE-MTIME: 1495911486.000000\n"
 
 #: activity/activity.info:2
 msgid "CookieSearch"
-msgstr "Ọchụchọ kuki"
+msgstr "CookieSearch"
 
 #: SearchActivity.py:108
 msgid "Export scores to clipboard"
-msgstr "Ekspootu e mewo ka ọtụtụ ka clipboard"
+msgstr "Exporter les scores dans le presse-papier"
 
 #: SearchActivity.py:114
 msgid "Start a new game."
-msgstr "Amalite ọhụrụ egwuregwu."
+msgstr "Commencer une nouvelle partie."
 
 #: game.py:293 game.py:299
 msgid "New game"
-msgstr "Egwuregwu ohuru"
+msgstr "Nouvelle partie"
 
 #: game.py:294
 msgid "Do you want to play a new game?"
-msgstr "Ị chọrọ igwu egwu ọhụrụ egwuregwu?"
+msgstr "Veux-tu faire une nouvelle partie?"
 
 #: game.py:296
 msgid "Cancel"
-msgstr "Kagbuo"
+msgstr "Annuler"
