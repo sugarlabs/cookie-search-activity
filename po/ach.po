@@ -2,43 +2,42 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-05-31 08:06-0400\n"
-"PO-Revision-Date: 2017-10-15 16:38+0000\n"
+"PO-Revision-Date: 2017-10-15 16:34+0000\n"
 "Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ibo\n"
+"Language: ach\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1508085480.000000\n"
+"X-POOTLE-MTIME: 1508085252.000000\n"
 
 #: activity/activity.info:2
 msgid "CookieSearch"
-msgstr "Ọchụchọ kuki"
+msgstr "YenyoCookie"
 
 #: SearchActivity.py:108
 msgid "Export scores to clipboard"
-msgstr "Ekspootu e mewo ka ọtụtụ ka clipboard"
+msgstr "Cwal en onwongere i kajogo"
 
 #: SearchActivity.py:114
 msgid "Start a new game."
-msgstr "Amalite ọhụrụ egwuregwu."
+msgstr "Cak tuku mukene."
 
 #: game.py:293 game.py:299
 msgid "New game"
-msgstr "Egwuregwu ohuru"
+msgstr "Tuku manyen"
 
 #: game.py:294
 msgid "Do you want to play a new game?"
-msgstr "Ị chọrọ igwu egwu ọhụrụ egwuregwu?"
+msgstr "Imito tuku tuku manyen?"
 
 #: game.py:296
 msgid "Cancel"
-msgstr "Kagbuo"
+msgstr "Ngol oko"
