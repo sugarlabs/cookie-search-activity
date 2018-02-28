@@ -8,3 +8,4 @@ icon = activity-search
 show_launcher = yes
 summary = search for cookies hidden behind a hungry turtle
 category = game
+repository = https://github.com/sugarlabs/cookie-search-activity.git
