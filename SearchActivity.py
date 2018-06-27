@@ -119,7 +119,6 @@ class SearchActivity(activity.Activity):
         separator_factory(toolbox.toolbar, True, False)
 
         stop_button = StopButton(self)
-        stop_button.props.accelerator = '<Ctrl>q'
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
 
