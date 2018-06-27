@@ -10,7 +10,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-from gi.repository import Gtk, GObject, GdkPixbuf, Gdk
+from gi.repository import Gtk, GLib, GdkPixbuf, Gdk
 import cairo
 import os
 from random import uniform
@@ -291,7 +291,7 @@ class Game():
         self._game_time_seconds += 1
         self._game_time = convert_seconds_to_minutes(self._game_time_seconds)
         self._set_label(self._game_time)
-        self._timeout_id = GObject.timeout_add(1000, self._counter)
+        self._timeout_id = GLib.timeout_add(1000, self._counter)
 
     def _start_timer(self):
         ''' Start/reset the timer '''
@@ -303,7 +303,7 @@ class Game():
 
     def _stop_timer(self):
         if self._timeout_id is not None:
-            GObject.source_remove(self._timeout_id)
+            GLib.source_remove(self._timeout_id)
             self._timeout_id = None
 
     def _smile(self):
