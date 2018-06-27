@@ -304,6 +304,7 @@ class Game():
     def _stop_timer(self):
         if self._timeout_id is not None:
             GObject.source_remove(self._timeout_id)
+            self._timeout_id = None
 
     def _smile(self):
         self._stop_timer()
