@@ -1,16 +1,17 @@
 What is this?
 =============
 
-The Cookie Search Activity is a simple [mine-sweeper](http://en.wikipedia.org/wiki/Minesweeper_%28video_game%29) type game.
+The CookieSearch Activity is a simple [mine-sweeper](http://en.wikipedia.org/wiki/Minesweeper_%28video_game%29) game where the goal is to find cookies.
 
 How to use?
 ===========
 
-Cookie Search is part of the Sugar desktop.  Please refer to;
+CookieSearch is not part of the Sugar desktop, but can be added.  Please refer to;
 
 * [How to Get Sugar on sugarlabs.org](https://sugarlabs.org/),
 * [How to use Sugar](https://help.sugarlabs.org/),
-* [How to use Cookie Search](https://help.sugarlabs.org/cookie_search.html)
+* [Download CookieSearch using Browse](https://activities.sugarlabs.org/), search for `CookieSearch`, then download, and;
+* [How to use CookieSearch](https://help.sugarlabs.org/cookie_search.html)
 
 How to upgrade?
 ===============
