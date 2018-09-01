@@ -209,7 +209,7 @@ class SearchActivity(activity.Activity):
         """ Joining and sharing are mostly the same... """
         if self.shared_activity is None:
             _logger.debug("Error: Failed to share or join activity ... \
-                _shared_activity is null in _shared_cb()")
+                shared_activity is null in _shared_cb()")
             return
 
         self.initiating = sharer
