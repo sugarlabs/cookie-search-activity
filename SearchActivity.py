@@ -32,7 +32,6 @@ from sugar3.presence.tubeconn import TubeConnection
 
 from gettext import gettext as _
 
-import json
 from json import load as jload
 from json import dump as jdump
 from StringIO import StringIO
@@ -103,12 +102,6 @@ class SearchActivity(activity.Activity):
         toolbox.show()
         self.toolbar = toolbox.toolbar
 
-        export_scores = button_factory(
-            'score-copy',
-            activity_button,
-            self._write_scores_to_clipboard,
-            tooltip=_('Export scores to clipboard'))
-
         self._new_game_button_h = button_factory(
             'new-game',
             self.toolbar,
@@ -152,12 +145,13 @@ class SearchActivity(activity.Activity):
             self._game._game_time_seconds = self._data_loader(
                 self.metadata['current_gametime']) - 1
         else:
-            self._game._game_time_seconds = 0;
+            self._game._game_time_seconds = 0
         self._game._game_time = convert_seconds_to_minutes(
             self._game._game_time_seconds)
 
         if 'current_level' in self.metadata:
-            self._game.level = self._data_loader(self.metadata['current_level'])
+            self._game.level = self._data_loader(
+                self.metadata['current_level'])
 
         if 'dotlist' in self.metadata:
             dot_list = []
@@ -219,13 +213,12 @@ class SearchActivity(activity.Activity):
         self.tubes_chan = self._shared_activity.telepathy_tubes_chan
         self.text_chan = self._shared_activity.telepathy_text_chan
 
-        self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].connect_to_signal(
+        self.tubes_chan[
+            TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].connect_to_signal(
             'NewTube', self._new_tube_cb)
 
         if sharer:
             _logger.debug('This is my activity: making a tube...')
-            id = self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].OfferDBusTube(
-                SERVICE, {})
         else:
             _logger.debug('I am joining an activity: waiting for a tube...')
             self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].ListTubes(
