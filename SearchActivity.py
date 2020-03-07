@@ -22,19 +22,19 @@ from sugar3.activity.widgets import StopButton
 from toolbar_utils import button_factory, label_factory, separator_factory
 from utils import json_load, json_dump, convert_seconds_to_minutes
 
-import telepathy
-import dbus
-from dbus.service import signal
-from dbus.gobject_service import ExportedGObject
-from sugar3.presence import presenceservice
-from sugar3.presence.tubeconn import TubeConnection
+# import telepathy
+# import dbus
+# from dbus.service import signal
+# from dbus.gobject_service import ExportedGObject
+# from sugar3.presence import presenceservice
+# from sugar3.presence.tubeconn import TubeConnection
 
 from gettext import gettext as _
 
 import json
 from json import load as jload
 from json import dump as jdump
-from StringIO import StringIO
+from io import StringIO
 
 from game import Game
 
@@ -51,10 +51,7 @@ class SearchActivity(activity.Activity):
 
     def __init__(self, handle):
         """ Initialize the toolbars and the game board """
-        try:
-            super(SearchActivity, self).__init__(handle)
-        except dbus.exceptions.DBusException as e:
-            _logger.error(str(e))
+        super(SearchActivity, self).__init__(handle)
 
         self.path = activity.get_bundle_path()
         self.all_scores = []
@@ -78,7 +75,14 @@ class SearchActivity(activity.Activity):
 
         self._game = Game(canvas, parent=self, path=self.path,
                           colors=self.colors)
-        self._setup_presence_service()
+
+        self.connect('shared', self._shared_cb)
+        self.connect('joined', self._joined_cb)
+
+        self._collab = CollabWrapper(self)
+        self._collab.connect('message', self._message_cb)
+        self._collab.connect('joined', self._joined_cb)
+        self._collab.setup()
 
         if 'dotlist' in self.metadata:
             self._restore()
@@ -239,12 +243,12 @@ class SearchActivity(activity.Activity):
 
     def _list_tubes_error_cb(self, e):
         """ Log errors. """
-        _logger.debug('Error: ListTubes() failed: %s' % (e))
+        _logger.debug('Error: ListTubes() failed: {}'.format(e))
 
     def _new_tube_cb(self, id, initiator, type, service, params, state):
         """ Create a new tube. """
-        _logger.debug('New tube: ID=%d initator=%d type=%d service=%s \
-params=%r state=%d' % (id, initiator, type, service, params, state))
+        _logger.debug('New tube: ID={} initator={} type={} service={} \
+params={} state={}'.format(id, initiator, type, service, params, state))
 
         if (type == telepathy.TUBE_TYPE_DBUS and service == SERVICE):
             if state == telepathy.TUBE_STATE_LOCAL_PENDING:
@@ -274,13 +278,13 @@ params=%r state=%d' % (id, initiator, type, service, params, state))
         try:
             command, payload = event_message.split('|', 2)
         except ValueError:
-            _logger.debug('Could not split event message %s' % (event_message))
+            _logger.debug('Could not split event message {}'.format(event_message))
             return
         self._processing_methods[command][0](payload)
 
     def send_new_game(self):
         ''' Send a new grid to all players '''
-        self.send_event('n|%s' % (json_dump(self._game.save_game())))
+        self.send_event('n|{}'.format(json_dump(self._game.save_game())))
 
     def _receive_new_game(self, payload):
         ''' Sharer can start a new game. '''
@@ -289,7 +293,7 @@ params=%r state=%d' % (id, initiator, type, service, params, state))
 
     def send_dot_click(self, dot, color):
         ''' Send a dot click to all the players '''
-        self.send_event('p|%s' % (json_dump([dot, color])))
+        self.send_event('p|{}'.format(json_dump([dot, color])))
 
     def _receive_dot_click(self, payload):
         ''' When a dot is clicked, everyone should change its color. '''
