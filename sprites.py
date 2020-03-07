@@ -471,5 +471,5 @@ class Sprite:
                 else:
                     return(r, g, b, a)
         else:
-            print "Array is none"
+            print("Array is none")
             return(-1, -1, -1, -1)
