@@ -133,6 +133,13 @@ class SearchActivity(activity.Activity):
         ''' Start a new game. '''
         self._game.new_game()
 
+    def _message_cb(self, collab, buddy, msg):
+        ''' Data from a tube has arrived. '''
+        command = msg.get('command')
+        payload = msg.get('payload')
+        self._processing_methods[command][0](payload)
+
+
     def write_file(self, file_path):
         """ Write the grid status to the Journal """
         dot_list = self._game.save_game()
