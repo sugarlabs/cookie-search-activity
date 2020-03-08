@@ -195,7 +195,8 @@ class SearchActivity(activity.Activity):
         scores = ''
         for i, s in enumerate(self.all_scores):
             scores += '%s: %s\n' % (str(i + 1), s)
-        Gtk.Clipboard().set_text(scores)
+        Gtk.Clipboard().set_text(scores.encode("utf-8"))
+        
 
     # Collaboration-related methods
 
