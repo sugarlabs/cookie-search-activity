@@ -27,7 +27,7 @@ from utils import json_load, json_dump, convert_seconds_to_minutes
 # import telepathy
 import dbus
 from dbus.service import signal
-from dbus.gobject_service import ExportedGObject
+# from dbus.gobject_service import ExportedGObject
 from sugar3.presence import presenceservice
 from sugar3.presence.tubeconn import TubeConnection
 
@@ -263,8 +263,8 @@ params={} state={}'.format(id, initiator, type, service, params, state))
                 group_iface=self.text_chan[
                     TelepathyGLib.IFACE_CHANNEL_INTERFACE_GROUP])
 
-            self.chattube = ChatTube(tube_conn, self.initiating,
-                                     self.event_received_cb)
+            # self.chattube = ChatTube(tube_conn, self.initiating,
+            #                          self.event_received_cb)
 
     def _setup_dispatch_table(self):
         ''' Associate tokens with commands. '''
@@ -304,29 +304,29 @@ params={} state={}'.format(id, initiator, type, service, params, state))
 
     def send_event(self, entry):
         """ Send event through the tube. """
-        if hasattr(self, 'chattube') and self.chattube is not None:
-            self.chattube.SendText(entry)
+        # if hasattr(self, 'chattube') and self.chattube is not None:
+        #     self.chattube.SendText(entry)
 
 
-class ChatTube(ExportedGObject):
-    """ Class for setting up tube for sharing """
+# class ChatTube(ExportedGObject):
+#     """ Class for setting up tube for sharing """
 
-    def __init__(self, tube, is_initiator, stack_received_cb):
-        super(ChatTube, self).__init__(tube, PATH)
-        self.tube = tube
-        self.is_initiator = is_initiator  # Are we sharing or joining activity?
-        self.stack_received_cb = stack_received_cb
-        self.stack = ''
+#     def __init__(self, tube, is_initiator, stack_received_cb):
+#         super(ChatTube, self).__init__(tube, PATH)
+#         self.tube = tube
+#         self.is_initiator = is_initiator  # Are we sharing or joining activity?
+#         self.stack_received_cb = stack_received_cb
+#         self.stack = ''
 
-        self.tube.add_signal_receiver(self.send_stack_cb, 'SendText', IFACE,
-                                      path=PATH, sender_keyword='sender')
+#         self.tube.add_signal_receiver(self.send_stack_cb, 'SendText', IFACE,
+#                                       path=PATH, sender_keyword='sender')
 
-    def send_stack_cb(self, text, sender=None):
-        if sender == self.tube.get_unique_name():
-            return
-        self.stack = text
-        self.stack_received_cb(text)
+#     def send_stack_cb(self, text, sender=None):
+#         if sender == self.tube.get_unique_name():
+#             return
+#         self.stack = text
+#         self.stack_received_cb(text)
 
-    @signal(dbus_interface=IFACE, signature='s')
-    def SendText(self, text):
-        self.stack = text
+#     @signal(dbus_interface=IFACE, signature='s')
+#     def SendText(self, text):
+#         self.stack = text
