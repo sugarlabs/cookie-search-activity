@@ -189,17 +189,14 @@ class SearchActivity(activity.Activity):
         io = StringIO(data)
         return jload(io)
 
-    def _write_scores_to_clipboard(self, button=None):
-        pass
-
     # to-do:
-    # def _write_scores_to_clipboard(self, button=None):
-    #     ''' SimpleGraph will plot the cululative results '''
-    #     _logger.debug(self.all_scores)
-    #     scores = ''
-    #     for i, s in enumerate(self.all_scores):
-    #         scores += '{}: {}\n'.format(str(i + 1), s)
-    #     Gtk.Clipboard().set_text(scores)
+    def _write_scores_to_clipboard(self, button=None):
+        ''' SimpleGraph will plot the cululative results '''
+        _logger.debug(self.all_scores)
+        scores = ''
+        for i, s in enumerate(self.all_scores):
+            scores += '{}: {}\n'.format(str(i + 1), s)
+        Gtk.Clipboard().set_text(scores)
         
 
     # Collaboration-related methods
