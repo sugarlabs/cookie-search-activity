@@ -31,6 +31,7 @@ from dbus.service import signal
 from sugar3.presence import presenceservice
 from sugar3.presence.tubeconn import TubeConnection
 
+from collabwrapper import CollabWrapper
 from gettext import gettext as _
 
 import json
