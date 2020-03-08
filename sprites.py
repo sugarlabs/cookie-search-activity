@@ -464,8 +464,8 @@ class Sprite:
                 return(-1, -1, -1, -1)
             else:
                 offset = (y * self.images[i].get_width() + x) * 4
-                r, g, b, a = ord(array[offset]), ord(array[offset + 1]), \
-                    ord(array[offset + 2]), ord(array[offset + 3])
+                r, g, b, a = ord(str(array[offset])), ord(str(array[offset + 1])), \
+                    ord(str(array[offset + 2])), ord(str(array[offset + 3]))
                 if isinstance(self.images[i], cairo.ImageSurface):
                     return(b, g, r, a)
                 else:
