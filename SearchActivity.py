@@ -189,7 +189,6 @@ class SearchActivity(activity.Activity):
         io = StringIO(data)
         return jload(io)
 
-    # to-do:
     def _write_scores_to_clipboard(self, button=None):
         ''' SimpleGraph will plot the cululative results '''
         _logger.debug(self.all_scores)
@@ -314,6 +313,7 @@ params={} state={}'.format(id, initiator, type, service, params, state))
 
     def send_event(self, entry):
         """ Send event through the tube. """
+        pass
         # if hasattr(self, 'chattube') and self.chattube is not None:
         #     self.chattube.SendText(entry)
 

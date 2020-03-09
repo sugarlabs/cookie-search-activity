@@ -253,7 +253,6 @@ class Game():
         else:
             if spr.type != 0:
                 red, green, blue, alpha = spr.get_pixel((x, y))
-                print(red, green, blue, alpha)
                 if red > 190 and red < 215:  # clicked the cookie
                     self._flip_the_cookie(spr)
                     return True
