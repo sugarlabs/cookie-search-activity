@@ -32,6 +32,10 @@ from toolbar_utils import button_factory, label_factory, separator_factory
 from collabwrapper import CollabWrapper
 from gettext import gettext as _
 
+import json
+from json import load as jload
+from json import dump as jdump
+
 from io import StringIO
 
 from game import Game
