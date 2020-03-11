@@ -235,9 +235,9 @@ class SearchActivity(activity.Activity):
         (dot_list, move_list) = payload
         self._game.restore_game(dot_list, move_list)
 
-    def send_dot_click(self, dot):
+    def send_dot_click(self, dot, color):
         ''' Send a dot click to all the players '''
-        self.send_event('p', dot)
+        self.send_event('p|{}'.format(json_dump([dot, color])))
 
     def _receive_dot_click(self, payload):
         ''' When a dot is clicked, everyone should change its color. '''
