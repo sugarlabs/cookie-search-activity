@@ -224,7 +224,7 @@ class SearchActivity(activity.Activity):
         ''' Data from a tube has arrived. '''
         command = msg.get('command')
         payload = msg.get('payload')
-        self._processing_methods[command][0](payload)    
+        self._processing_methods[command][0](payload)
 
     def send_new_game(self):
         ''' Send a new grid to all players '''
