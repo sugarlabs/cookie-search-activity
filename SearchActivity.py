@@ -22,6 +22,8 @@ from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.activity.widgets import StopButton
 
 from toolbar_utils import button_factory, label_factory, separator_factory
+from utils import json_load, json_dump, convert_seconds_to_minutes
+
 # import telepathy
 # import dbus
 # from dbus.service import signal
