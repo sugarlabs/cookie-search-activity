@@ -247,4 +247,4 @@ class SearchActivity(activity.Activity):
 
     def send_event(self, command, payload):
         """ Send event through the tube. """
-        self._collab.post({'command': command, 'payload': payload})``
+        self._collab.post({'command': command, 'payload': payload})
