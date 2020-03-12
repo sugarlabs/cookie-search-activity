@@ -159,7 +159,7 @@ class Game():
 
         self._start_timer()
 
-    def restore_game(self, dot_list):
+    def restore_game(self, dot_list, move_list):
         ''' Restore a game from the Journal or share '''
         for i, dot in enumerate(dot_list):
             self._dots[i].type = dot
