@@ -159,7 +159,7 @@ class Game():
 
         self._start_timer()
 
-    def restore_game(self, dot_list, move_list):
+    def restore_game(self, dot_list):
         ''' Restore a game from the Journal or share '''
         for i, dot in enumerate(dot_list):
             self._dots[i].type = dot
@@ -174,9 +174,6 @@ class Game():
                 count = self._count([2, 4], self._dots[i])
                 if count > 0:
                     self._dots[i].set_label(count)
-        if move_list is not None:
-            self._move_list = move_list[:]
-
 
         self._counter()
 
@@ -187,7 +184,7 @@ class Game():
 
         for dot in self._dots:
             dot_list.append(dot.type)
-        return (dot_list, self.move_list)
+        return dot_list
 
     def _set_label(self, gametime):
         ''' Set the label in the toolbar or the window frame. '''
