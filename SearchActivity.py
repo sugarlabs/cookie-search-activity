@@ -137,17 +137,12 @@ class SearchActivity(activity.Activity):
 
     def write_file(self, file_path):
         """ Write the grid status to the Journal """
-        (dot_list, move_list) = self._game.save_game()
+        dot_list = self._game.save_game()
         self.metadata['dotlist'] = ''
         for dot in dot_list:
             self.metadata['dotlist'] += str(dot)
             if dot_list.index(dot) < len(dot_list) - 1:
                 self.metadata['dotlist'] += ' '
-                self.metadata['movelist'] = ''
-        for move in move_list:
-            self.metadata['movelist'] += str(move)
-            if move_list.index(move) < len(move_list) - 1:
-                self.metadata['movelist'] += ' '
 
         self.metadata['all_scores'] = \
             self._data_dumper(self.all_scores)
@@ -179,15 +174,7 @@ class SearchActivity(activity.Activity):
             for dot in dots:
                 dot_list.append(int(dot))
 
-        if 'movelist' in self.metadata:
-            move_list = []
-            moves = self.metadata['movelist'].split()
-            for move in moves:
-                move_list.append(int(move))
-        else:
-            move_list = None
-
-        self._game.restore_game(dot_list, move_list)
+        self._game.restore_game(dot_list)
 
         if 'all_scores' in self.metadata:
             self.all_scores = self._data_loader(self.metadata['all_scores'])
@@ -247,9 +234,9 @@ class SearchActivity(activity.Activity):
 
     def _receive_new_game(self, payload):
         ''' Sharer can start a new game. '''
-        print(len(payload))
-        (dot_list, move_list) = payload
-        self._game.restore_game(dot_list, move_list)
+        # print(len(payload))
+        dot_list = payload
+        self._game.restore_game(dot_list)
 
     def send_dot_click(self, dot, color):
         ''' Send a dot click to all the players '''
