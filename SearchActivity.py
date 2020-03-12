@@ -230,11 +230,12 @@ class SearchActivity(activity.Activity):
 
     def send_new_game(self):
         ''' Send a new grid to all players '''
+        print('sending game..')
         self.send_event('n', self._game.save_game())
 
     def _receive_new_game(self, payload):
         ''' Sharer can start a new game. '''
-        # print(len(payload))
+        print(type(payload))
         dot_list = payload
         self._game.restore_game(dot_list)
 
