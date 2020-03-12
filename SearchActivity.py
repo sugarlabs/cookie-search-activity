@@ -241,6 +241,7 @@ class SearchActivity(activity.Activity):
 
     def send_dot_click(self, dot, color):
         ''' Send a dot click to all the players '''
+        print('sending dot click: {}'.format(dot))
         self.send_event('p', json_dump([dot, color]))
         # self.send_event('p|{}'.format(json_dump([dot, color])))
         
