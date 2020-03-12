@@ -381,6 +381,7 @@ class Game():
 
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
+        print('newdot() called')
         self._dot_cache = {}
         if color not in self._dot_cache:
             self._stroke = color
