@@ -381,7 +381,6 @@ class Game():
 
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
-        print('newdot() called')
         self._dot_cache = {}
         if color not in self._dot_cache:
             self._stroke = color
@@ -390,7 +389,7 @@ class Game():
             self._svg_height = self._dot_size
 
             i = self._colors.index(color)
-            print('PATHS[i]: {} for i={}'.format(PATHS[i], i))
+            print('PATHS[i]: {} for i={} and color: {}'.format(PATHS[i], i, color))
             if PATHS[i] is False:
                 pixbuf = svg_str_to_pixbuf(
                     self._header() +
