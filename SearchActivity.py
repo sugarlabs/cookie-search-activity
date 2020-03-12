@@ -232,12 +232,12 @@ class SearchActivity(activity.Activity):
 
     def _receive_new_game(self, payload):
         ''' Sharer can start a new game. '''
-        dot_list = json_load(payload)
+        (dot_list, move_list) = payload 
         self._game.restore_game(dot_list, move_list)
 
     def send_dot_click(self, dot, color):
         ''' Send a dot click to all the players '''
-        self.send_event('p', str(json_dump([dot, color])))
+        self.send_event('p', json_dump([dot, color])
         # self.send_event('p|{}'.format(json_dump([dot, color])))
 
     def _receive_dot_click(self, payload):
@@ -247,4 +247,4 @@ class SearchActivity(activity.Activity):
 
     def send_event(self, command, payload):
         """ Send event through the tube. """
-        self._collab.post({'command': command, 'payload': payload})
+        self._collab.post({'command': command, 'payload': payload})``
