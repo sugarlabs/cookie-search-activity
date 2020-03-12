@@ -246,7 +246,8 @@ class SearchActivity(activity.Activity):
         # self.send_event('p|{}'.format(json_dump([dot, color])))
         
     def _receive_dot_click(self, payload):
-        ''' When a dot is clicked, everyone should change its color. '''
+        ''' When a dot is clicked, everyone should change their color. '''
+        print('recieved dot click, payload length: {}'.format(len(payload)))
         (dot, color) = json_load(payload)
         self._game.remote_button_press(dot, color)
 
