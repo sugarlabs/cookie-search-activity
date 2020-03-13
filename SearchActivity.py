@@ -11,9 +11,7 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-gi.require_version('TelepathyGLib', '0.12')
 from gi.repository import Gtk, Gdk
-from gi.repository import TelepathyGLib
 
 from sugar3.activity import activity
 from sugar3 import profile
@@ -23,13 +21,6 @@ from sugar3.activity.widgets import StopButton
 
 from toolbar_utils import button_factory, label_factory, separator_factory
 from utils import json_load, json_dump, convert_seconds_to_minutes
-
-# import telepathy
-# import dbus
-# from dbus.service import signal
-# from dbus.gobject_service import ExportedGObject
-# from sugar3.presence import presenceservice
-# from sugar3.presence.tubeconn import TubeConnection
 
 from collabwrapper import CollabWrapper
 from gettext import gettext as _
