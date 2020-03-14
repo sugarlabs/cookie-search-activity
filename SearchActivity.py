@@ -164,8 +164,7 @@ class SearchActivity(activity.Activity):
             dots = self.metadata['dotlist'].split()
             for dot in dots:
                 dot_list.append(int(dot))
-
-        self._game.restore_game(dot_list)
+            self._game.restore_game(dot_list)
 
         if 'all_scores' in self.metadata:
             self.all_scores = self._data_loader(self.metadata['all_scores'])
