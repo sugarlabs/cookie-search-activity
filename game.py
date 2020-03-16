@@ -152,7 +152,6 @@ class Game():
                     break
                 else:
                     n = int(uniform(0, self.grid_width * self.grid_height))
-
         if self.we_are_sharing:
             _logger.debug('sending a new game')
             self._parent.send_new_game()
@@ -231,16 +230,16 @@ class Game():
             self._parent.send_dot_click(self._dots.index(spr), spr.type)
 
         counter = self._count([2, 4], spr)
-        if counter > 0:
+        if counter > 0: #if you have mines in your neighbourhood
             spr.set_label(str(counter))
         else:
-            spr.set_label('')
+            spr.set_label('X')
             for dot in self._neighbors(spr):
                 self._floodfill(old_type, dot)
 
     def _button_press_cb(self, win, event):
         win.grab_focus()
-        x, y = list(map(int, event.get_coords()))
+        x, y = map(int, event.get_coords())
 
         spr = self._sprites.find_sprite((x, y))
         if spr is None:
@@ -389,7 +388,6 @@ class Game():
             self._svg_height = self._dot_size
 
             i = self._colors.index(color)
-            print('PATHS[i]: {} for i={} and color: {}'.format(PATHS[i], i, color))
             if PATHS[i] is False:
                 pixbuf = svg_str_to_pixbuf(
                     self._header() +
@@ -458,7 +456,7 @@ class Game():
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
     pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
-    pl.write(svg_string.encode())
+    pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()
     return pixbuf
