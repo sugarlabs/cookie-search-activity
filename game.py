@@ -456,7 +456,7 @@ class Game():
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
     pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
-    pl.write(svg_string)
+    pl.write(svg_string.encode())
     pl.close()
     pixbuf = pl.get_pixbuf()
     return pixbuf
