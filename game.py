@@ -233,7 +233,7 @@ class Game():
         if counter > 0:
             spr.set_label(str(counter))
         else:
-            spr.set_label('X')
+            spr.set_label('')
             for dot in self._neighbors(spr):
                 self._floodfill(old_type, dot)
 
