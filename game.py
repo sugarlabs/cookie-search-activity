@@ -230,7 +230,7 @@ class Game():
             self._parent.send_dot_click(self._dots.index(spr), spr.type)
 
         counter = self._count([2, 4], spr)
-        if counter > 0: #if you have mines in your neighbourhood
+        if counter > 0:
             spr.set_label(str(counter))
         else:
             spr.set_label('X')
