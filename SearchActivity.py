@@ -22,10 +22,10 @@ from sugar3.activity.widgets import StopButton
 from toolbar_utils import button_factory, label_factory, separator_factory
 from utils import json_load, json_dump, convert_seconds_to_minutes
 
-import telepathy
+from gi.repository import TelepathyGLib
 import dbus
 from dbus.service import signal
-from dbus.gobject_service import ExportedGObject
+from dbus.gi_service import ExportedGObject
 from sugar3.presence import presenceservice
 from sugar3.presence.tubeconn import TubeConnection
 
@@ -214,20 +214,20 @@ class SearchActivity(activity.Activity):
         self.initiating = sharer
         self.waiting_for_hand = not sharer
 
-        self.conn = self._shared_activity.telepathy_conn
+        self.conn = self._shared_activity.telepathy_con
         self.tubes_chan = self._shared_activity.telepathy_tubes_chan
         self.text_chan = self._shared_activity.telepathy_text_chan
 
-        self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES].connect_to_signal(
+        self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].connect_to_signal(
             'NewTube', self._new_tube_cb)
 
         if sharer:
             _logger.debug('This is my activity: making a tube...')
-            id = self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES].OfferDBusTube(
+            id = self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].OfferDBusTube(
                 SERVICE, {})
         else:
             _logger.debug('I am joining an activity: waiting for a tube...')
-            self.tubes_chan[telepathy.CHANNEL_TYPE_TUBES].ListTubes(
+            self.tubes_chan[TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].ListTubes(
                 reply_handler=self._list_tubes_reply_cb,
                 error_handler=self._list_tubes_error_cb)
         self._game.set_sharing(True)
@@ -246,16 +246,16 @@ class SearchActivity(activity.Activity):
         _logger.debug('New tube: ID=%d initator=%d type=%d service=%s \
 params=%r state=%d' % (id, initiator, type, service, params, state))
 
-        if (type == telepathy.TUBE_TYPE_DBUS and service == SERVICE):
-            if state == telepathy.TUBE_STATE_LOCAL_PENDING:
+        if (type == TelepathyGLib.TubeType.DBUS and service == SERVICE):
+            if state == TelepathyGLib.TubeState.LOCAL_PENDING:
                 self.tubes_chan[
-                    telepathy.CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
+                    TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
 
             tube_conn = TubeConnection(
                 self.conn, self.tubes_chan[
-                    telepathy.CHANNEL_TYPE_TUBES], id,
+                    TelepathyGLib.IFACE_CHANNEL_TYPE_TUBES], id,
                 group_iface=self.text_chan[
-                    telepathy.CHANNEL_INTERFACE_GROUP])
+                    TelepathyGLib.IFACE_CHANNEL_INTERFACE_GROUP])
 
             self.chattube = ChatTube(tube_conn, self.initiating,
                                      self.event_received_cb)
