@@ -60,6 +60,8 @@ def svg_str_to_pixbuf(svg_string):
     pixbuf = pl.get_pixbuf()
     return pixbuf
 '''
+import gi
+gi.require_version('PangoCairo', '1.0')
 import cairo
 
 from gi.repository import Gdk
