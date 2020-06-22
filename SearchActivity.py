@@ -151,7 +151,7 @@ class SearchActivity(activity.Activity):
             self._game._game_time_seconds = self._data_loader(
                 self.metadata['current_gametime']) - 1
         else:
-            self._game._game_time_seconds = 0;
+            self._game._game_time_seconds = 0
         self._game._game_time = convert_seconds_to_minutes(
             self._game._game_time_seconds)
 
