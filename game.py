@@ -124,7 +124,7 @@ class Game():
                      y * (self._dot_size + self._space)))
                 i += 1
 
-        self.restore_game(dot_list)
+        self.restore_game(dot_list,self._colors)
 
     def __draw_cb(self, canvas, cr):
         self._sprites.redraw_sprites(cr=cr)
@@ -159,8 +159,9 @@ class Game():
 
         self._start_timer()
 
-    def restore_game(self, dot_list):
+    def restore_game(self, dot_list, colors):
         ''' Restore a game from the Journal or share '''
+        self._colors = colors
         for i, dot in enumerate(dot_list):
             self._dots[i].type = dot
             if dot in [4]:  # marked by user
@@ -184,7 +185,7 @@ class Game():
 
         for dot in self._dots:
             dot_list.append(dot.type)
-        return dot_list
+        return dot_list, self._colors
 
     def _set_label(self, gametime):
         ''' Set the label in the toolbar or the window frame. '''
