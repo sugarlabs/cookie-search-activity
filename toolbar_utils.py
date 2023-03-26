@@ -17,7 +17,6 @@ from gi.repository import Gtk
 from sugar3.graphics.radiotoolbutton import RadioToolButton
 from sugar3.graphics.toolbutton import ToolButton
 from sugar3.graphics.combobox import ComboBox
-from sugar3.graphics.toolcombobox import ToolComboBox
 
 
 def combo_factory(combo_array, toolbar, callback, cb_arg=None,
