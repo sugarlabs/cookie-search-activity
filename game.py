@@ -85,8 +85,8 @@ class Game():
         self._dots = []
         for y in range(self.grid_height):
             for x in range(self.grid_width):
-                xoffset = int((self._width - self.grid_width * self._dot_size -
-                               (self.grid_width - 1) * self._space) / 2.)
+                xoffset = int((self._width - self.grid_width * self._dot_size
+                               - (self.grid_width - 1) * self._space) / 2.)
                 self._dots.append(
                     Sprite(self._sprites,
                            xoffset + x * (self._dot_size + self._space),
@@ -117,8 +117,8 @@ class Game():
         i = 0
         for y in range(self.grid_height):
             for x in range(self.grid_width):
-                xoffset = int((self._width - self.grid_width * self._dot_size -
-                               (self.grid_width - 1) * self._space) / 2.)
+                xoffset = int((self._width - self.grid_width * self._dot_size
+                               - (self.grid_width - 1) * self._space) / 2.)
                 self._dots[i].move(
                     (xoffset + x * (self._dot_size + self._space),
                      y * (self._dot_size + self._space)))
@@ -188,7 +188,8 @@ class Game():
 
     def _set_label(self, gametime):
         ''' Set the label in the toolbar or the window frame. '''
-        self._parent.status.set_label(_('Level') + ' ' + str(self.level) + ' / ' + gametime)
+        self._parent.status.set_label(_('Level') + ' '
+                                      + str(self.level) + ' / ' + gametime)
 
     def _neighbors(self, spr):
         ''' Return the list of surrounding dots '''
@@ -357,7 +358,7 @@ class Game():
     def __game_alert_response_cb(self, alert, response_id):
         self._parent.remove_alert(alert)
         if response_id is Gtk.ResponseType.OK:
-            if self.game_won == False:
+            if self.game_won is False:
                 self.level = 1
             elif self.grid_height * self.grid_width - self.level > 1:
                 self.level += 1
@@ -391,10 +392,10 @@ class Game():
             i = self._colors.index(color)
             if PATHS[i] is False:
                 pixbuf = svg_str_to_pixbuf(
-                    self._header() +
-                    self._circle(self._dot_size / 2., self._dot_size / 2.,
-                                 self._dot_size / 2.) +
-                    self._footer())
+                    self._header()
+                    + self._circle(self._dot_size / 2., self._dot_size / 2.,
+                                   self._dot_size / 2.)
+                    + self._footer())
             else:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     os.path.join(self._path, PATHS[i]),
@@ -416,16 +417,16 @@ class Game():
             self._svg_width = 3
             self._svg_height = self._height
             return svg_str_to_pixbuf(
-                self._header() +
-                self._rect(3, self._height, 0, 0) +
-                self._footer())
+                self._header()
+                + self._rect(3, self._height, 0, 0)
+                + self._footer())
         else:
             self._svg_width = self._width
             self._svg_height = 3
             return svg_str_to_pixbuf(
-                self._header() +
-                self._rect(self._width, 3, 0, 0) +
-                self._footer())
+                self._header()
+                + self._rect(self._width, 3, 0, 0)
+                + self._footer())
 
     def _header(self):
         return '<svg\n' + 'xmlns:svg="http://www.w3.org/2000/svg"\n' + \
