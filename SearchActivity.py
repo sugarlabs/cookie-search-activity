@@ -241,19 +241,19 @@ class SearchActivity(activity.Activity):
         """ Log errors. """
         _logger.debug('Error: ListTubes() failed: %s' % (e))
 
-    def _new_tube_cb(self, id, initiator, type, service, params, state):
+    def _new_tube_cb(self, tube_id, initiator, tube_type, service, params, state):
         """ Create a new tube. """
         _logger.debug('New tube: ID=%d initator=%d type=%d service=%s \
-params=%r state=%d' % (id, initiator, type, service, params, state))
+params=%r state=%d' % (tube_id, initiator, tube_type, service, params, state))
 
-        if (type == telepathy.TUBE_TYPE_DBUS and service == SERVICE):
+        if (tube_type == telepathy.TUBE_TYPE_DBUS and service == SERVICE):
             if state == telepathy.TUBE_STATE_LOCAL_PENDING:
                 self.tubes_chan[
                     telepathy.CHANNEL_TYPE_TUBES].AcceptDBusTube(id)
 
             tube_conn = TubeConnection(
                 self.conn, self.tubes_chan[
-                    telepathy.CHANNEL_TYPE_TUBES], id,
+                    telepathy.CHANNEL_TYPE_TUBES], tube_id,
                 group_iface=self.text_chan[
                     telepathy.CHANNEL_INTERFACE_GROUP])
 
