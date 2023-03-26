@@ -99,21 +99,20 @@ class SearchActivity(activity.Activity):
 
         self.set_toolbar_box(toolbox)
         toolbox.show()
-        self.toolbar = toolbox.toolbar
 
-        export_scores = button_factory(
+        button_factory(
             'score-copy',
             activity_button,
             self._write_scores_to_clipboard,
             tooltip=_('Export scores to clipboard'))
 
-        self._new_game_button_h = button_factory(
+        button_factory(
             'new-game',
-            self.toolbar,
+            toolbox.toolbar,
             self._new_game_cb,
             tooltip=_('Start a new game.'))
 
-        self.status = label_factory(self.toolbar, '', width=300)
+        label_factory(toolbox.toolbar, '', width=300)
 
         separator_factory(toolbox.toolbar, True, False)
 

@@ -64,7 +64,7 @@ def entry_factory(default_string, toolbar, tooltip=None, max=3):
 
 def button_factory(icon_name, toolbar, callback, cb_arg=None, tooltip=None,
                    accelerator=None):
-    '''Factory for making tooplbar buttons'''
+    '''Factory for making toolbar buttons'''
     button = ToolButton(icon_name)
     if tooltip is not None:
         button.set_tooltip(tooltip)
