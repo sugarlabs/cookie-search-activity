@@ -240,7 +240,8 @@ class SearchActivity(activity.Activity):
         """ Log errors. """
         _logger.debug('Error: ListTubes() failed: %s' % (e))
 
-    def _new_tube_cb(self, tube_id, initiator, tube_type, service, params, state):
+    def _new_tube_cb(self, tube_id, initiator, tube_type, service, params,
+                     state):
         """ Create a new tube. """
         _logger.debug('New tube: ID=%d initator=%d type=%d service=%s \
 params=%r state=%d' % (tube_id, initiator, tube_type, service, params, state))
