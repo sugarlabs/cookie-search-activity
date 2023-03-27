@@ -151,7 +151,7 @@ def image_factory(image, toolbar, tooltip=None):
 def spin_factory(default, min, max, callback, toolbar):
     spin_adj = Gtk.Adjustment(default, min, max, 1, 32, 0)
     spin = Gtk.SpinButton(spin_adj, 0, 0)
-    spin_id = spin.connect('value-changed', callback)
+    spin.connect('value-changed', callback)
     spin.set_numeric(True)
     spin.show()
     toolitem = Gtk.ToolItem()
