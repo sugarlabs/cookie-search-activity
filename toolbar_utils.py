@@ -51,6 +51,7 @@ def entry_factory(default_string, toolbar, tooltip=None, max=3):
     if tooltip is not None and hasattr(entry, 'set_tooltip_text'):
         entry.set_tooltip_text(tooltip)
     entry.set_width_chars(max)
+    entry.set_editable(editable)
     entry.show()
     toolitem = Gtk.ToolItem()
     toolitem.add(entry)
@@ -59,7 +60,10 @@ def entry_factory(default_string, toolbar, tooltip=None, max=3):
     else:  # or a secondary toolbar
         toolbar.props.page.insert(toolitem, -1)
     toolitem.show()
+    if callback is not None:
+        entry.connect('activate', callback)
     return entry
+   
 
 
 def button_factory(icon_name, toolbar, callback, cb_arg=None, tooltip=None,
