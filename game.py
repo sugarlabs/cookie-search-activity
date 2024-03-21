@@ -241,7 +241,7 @@ class Game():
 
     def _button_press_cb(self, win, event):
         win.grab_focus()
-        x, y = map(int, event.get_coords())
+        x, y = list(map(int, event.get_coords()))
 
         spr = self._sprites.find_sprite((x, y))
         if spr is None:

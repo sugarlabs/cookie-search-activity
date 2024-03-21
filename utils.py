@@ -10,7 +10,7 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-from StringIO import StringIO
+from io import StringIO
 try:
     OLD_SUGAR_SYSTEM = False
     import json
