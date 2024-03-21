@@ -33,7 +33,7 @@ from gettext import gettext as _
 
 from json import load as jload
 from json import dump as jdump
-from StringIO import StringIO
+from io import StringIO
 
 from game import Game
 

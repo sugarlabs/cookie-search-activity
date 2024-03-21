@@ -142,7 +142,7 @@ class Sprites:
         else:
             self.cr = cr
         if cr is None:
-            print 'sprites.redraw_sprites: no Cairo context'
+            print('sprites.redraw_sprites: no Cairo context')
             return
         for spr in self.list:
             if area is None:
@@ -251,7 +251,7 @@ class Sprite:
     def set_label(self, new_label, i=0):
         ''' Set the label drawn on the sprite '''
         self._extend_labels_array(i)
-        if isinstance(new_label, str) or isinstance(new_label, unicode):
+        if isinstance(new_label, str) or isinstance(new_label, str):
             # pango doesn't like nulls
             self.labels[i] = new_label.replace("\0", " ")
         else:
@@ -329,7 +329,7 @@ class Sprite:
         if cr is None:
             cr = self._sprites.cr
         if cr is None:
-            print 'sprite.draw: no Cairo context.'
+            print('sprite.draw: no Cairo context.')
             return
         for i, img in enumerate(self.images):
             if isinstance(img, GdkPixbuf.Pixbuf):
@@ -350,7 +350,7 @@ class Sprite:
                              self.rect[3])
                 cr.fill()
             else:
-                print 'sprite.draw: source not a pixbuf (%s)' % (type(img))
+                print('sprite.draw: source not a pixbuf (%s)' % (type(img)))
         if len(self.labels) > 0:
             self.draw_label(cr)
 
@@ -460,7 +460,7 @@ class Sprite:
         if array is not None:
             offset = (y * self.images[i].get_width() + x) * 4
             if offset < 0 or offset > len(array) - 4:
-                print "Index Error: %d %d" % (len(array), offset)
+                print("Index Error: %d %d" % (len(array), offset))
                 return(-1, -1, -1, -1)
             else:
                 offset = (y * self.images[i].get_width() + x) * 4
@@ -471,5 +471,5 @@ class Sprite:
                 else:
                     return(r, g, b, a)
         else:
-            print "Array is none"
+            print("Array is none")
             return(-1, -1, -1, -1)
